@@ -357,21 +357,21 @@ class TestAppState extends State<MyApp> {
         ),
       ),
       //PLANNER PAGE
-      //TODO (Create page)
+      //TODO: (Create page)
       Icon(
         Icons.calendar_today_rounded,
         size: 150,
         color: Colors.deepPurple,
       ),
       //CLASSES PAGE
-      //TODO (Create page)
+      //TODO: (Create page)
       Icon(
         Icons.format_list_bulleted_rounded,
         size: 150,
         color: Colors.deepPurple,
       ),
       //CLUBS PAGE
-      //TODO (Create page)
+      //TODO: (Create page)
       Icon(
         Icons.local_activity_rounded,
         size: 150,
