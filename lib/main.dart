@@ -13,7 +13,6 @@ main() {
 class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     //return _MyAppState();
     return TestAppState();
   }
@@ -382,18 +381,21 @@ class TestAppState extends State<MyApp> {
       home: Scaffold(
         backgroundColor: Color(0xFF121212),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Color(0xFF212121),
           title: Text('CCHS'),
           actions: <Widget>[
             // Settings
-            IconButton(
-              icon: Icon(
-                Icons.settings,
-                color: Colors.white,
+            Builder(
+              builder: (context) => IconButton(
+                icon: Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
               ),
-              onPressed: () {
-                // do something
-              },
             ),
           ],
         ),
@@ -437,6 +439,47 @@ class TestAppState extends State<MyApp> {
         ),
         body: Center(
           child: _pages.elementAt(_selectedIndex), //New
+        ),
+        // Settings Menu
+        drawer: new Drawer(
+          child: Container(
+            color: Color(0xFF121212),
+            child: ListView(
+              padding: EdgeInsets.all(0),
+              children: [
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Color(0xFF3b3b3b),
+                  ),
+                  child: Text('Settings',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      )),
+                ),
+                ListTile(
+                  leading: Icon(
+                    Icons.portrait_rounded,
+                    color: Colors.white,
+                  ),
+                  title: Text(
+                    'Name',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(
+                    Icons.color_lens,
+                    color: Colors.white,
+                  ),
+                  title: Text(
+                    'Theme',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
