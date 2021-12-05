@@ -300,58 +300,153 @@ class TestAppState extends State<MyApp> {
                 ),
               ),
             ),
+            // classes for the day
             Container(
-                color: Color(0xFF121212),
-                width: 400,
-                height: 600,
+              color: Color(0xFF121212),
+              width: 400,
+              height: 600,
+              child: Container(
+                width: 500,
                 child: Container(
-                    width: 500,
-                    child: Container(
-                        width: 100,
-                        margin: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Color(0xFF3b3b3b),
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(30.0),
-                            bottomLeft: Radius.circular(30.0),
-                            topLeft: Radius.circular(30.0),
-                            bottomRight: Radius.circular(30.0),
+                  child: Card(
+                    clipBehavior: Clip.antiAlias,
+                    color: Color(0xFF3b3b3b),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          leading: Icon(
+                            Icons.format_list_bulleted_rounded,
+                            color: Colors.white,
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              spreadRadius: 8,
-                              blurRadius: 10,
-                              offset: Offset(0, 0),
-                            )
+                          title: const Text(
+                            'Your classes for the day.',
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: ListView(
+                              scrollDirection: Axis.vertical,
+                              children: <Widget>[
+                                Card(
+                                  child: ListTile(
+                                    title: Text('AP Biology'),
+                                    trailing: Icon(Icons.more_vert),
+                                  ),
+                                ),
+                                Card(
+                                  child: ListTile(
+                                    title: Text('US History'),
+                                    trailing: Icon(Icons.more_vert),
+                                  ),
+                                ),
+                                Card(
+                                  child: ListTile(
+                                    title: Text('Programming 1'),
+                                    trailing: Icon(Icons.more_vert),
+                                  ),
+                                ),
+                                Card(
+                                  child: ListTile(
+                                    title: Text('Honors Spanish 3'),
+                                    trailing: Icon(Icons.more_vert),
+                                  ),
+                                ),
+                                Card(
+                                  child: ListTile(
+                                    title: Text('Band'),
+                                    trailing: Icon(Icons.more_vert),
+                                  ),
+                                ),
+                                Card(
+                                  child: ListTile(
+                                    title: Text('English 3'),
+                                    trailing: Icon(Icons.more_vert),
+                                  ),
+                                ),
+                                Card(
+                                  child: ListTile(
+                                    title: Text('Honors Algebra 2'),
+                                    trailing: Icon(Icons.more_vert),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        ButtonBar(
+                          alignment: MainAxisAlignment.start,
+                          children: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                primary: Colors.black.withOpacity(0.8),
+                                shape: const BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                // Perform some action
+                              },
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    'View All Classes',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_rounded,
+                                    color: Colors.white,
+                                  )
+                                ],
+                              ),
+                            ),
                           ],
-                        )))),
+                        ),
+                      ],
+                    ),
+                  ),
+                  width: 100,
+                  margin: EdgeInsets.all(20),
+                ),
+              ),
+            ),
             Container(
-                color: Color(0xFF121212),
-                width: 400,
-                height: 600,
+              color: Color(0xFF121212),
+              width: 400,
+              height: 600,
+              child: Container(
+                width: 500,
                 child: Container(
-                    width: 500,
-                    child: Container(
-                        width: 100,
-                        margin: EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Color(0xFF3b3b3b),
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(30.0),
-                            bottomLeft: Radius.circular(30.0),
-                            topLeft: Radius.circular(30.0),
-                            bottomRight: Radius.circular(30.0),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              spreadRadius: 8,
-                              blurRadius: 10,
-                              offset: Offset(0, 0),
-                            )
-                          ],
-                        )))),
+                  width: 100,
+                  margin: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF3b3b3b),
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(30.0),
+                      bottomLeft: Radius.circular(30.0),
+                      topLeft: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 8,
+                        blurRadius: 10,
+                        offset: Offset(0, 0),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
