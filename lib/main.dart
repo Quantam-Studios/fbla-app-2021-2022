@@ -47,7 +47,7 @@ class TestAppState extends State<MyApp> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: FractionalOffset.bottomCenter,
-                  colors: [Colors.purple, Colors.deepPurple],
+                  colors: [Color(0xff54BFF8), Color(0xff4C8CF2)],
                   stops: [0, 1],
                 ),
               ),
@@ -319,7 +319,7 @@ class TestAppState extends State<MyApp> {
               width: 400,
               height: 600,
               child: Container(
-                width: 500,
+                width: 600,
                 child: Container(
                   child: Card(
                     clipBehavior: Clip.antiAlias,
@@ -330,13 +330,20 @@ class TestAppState extends State<MyApp> {
                     child: Column(
                       children: [
                         ListTile(
-                          leading: Icon(
-                            Icons.format_list_bulleted_rounded,
-                            color: Colors.white,
-                          ),
-                          title: const Text(
-                            'Your classes for the day.',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          title: Center(
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.format_list_bulleted_rounded,
+                                  color: Colors.white,
+                                ),
+                                Text(
+                                  ' Your classes for the day.',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Expanded(
@@ -348,43 +355,36 @@ class TestAppState extends State<MyApp> {
                                 Card(
                                   child: ListTile(
                                     title: Text('AP Biology'),
-                                    trailing: Icon(Icons.more_vert),
                                   ),
                                 ),
                                 Card(
                                   child: ListTile(
                                     title: Text('US History'),
-                                    trailing: Icon(Icons.more_vert),
                                   ),
                                 ),
                                 Card(
                                   child: ListTile(
                                     title: Text('Programming 1'),
-                                    trailing: Icon(Icons.more_vert),
                                   ),
                                 ),
                                 Card(
                                   child: ListTile(
                                     title: Text('Honors Spanish 3'),
-                                    trailing: Icon(Icons.more_vert),
                                   ),
                                 ),
                                 Card(
                                   child: ListTile(
                                     title: Text('Band'),
-                                    trailing: Icon(Icons.more_vert),
                                   ),
                                 ),
                                 Card(
                                   child: ListTile(
                                     title: Text('English 3'),
-                                    trailing: Icon(Icons.more_vert),
                                   ),
                                 ),
                                 Card(
                                   child: ListTile(
                                     title: Text('Honors Algebra 2'),
-                                    trailing: Icon(Icons.more_vert),
                                   ),
                                 ),
                               ],
@@ -404,7 +404,8 @@ class TestAppState extends State<MyApp> {
                                 ),
                               ),
                               onPressed: () {
-                                // Perform some action
+                                // go to the classes page
+                                _onItemTapped(2);
                               },
                               child: Row(
                                 children: [
@@ -574,8 +575,11 @@ class TestAppState extends State<MyApp> {
                                                   child: ListTile(
                                                     title: Text(
                                                         'Honors Algebra 2'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
+                                                    trailing: IconButton(
+                                                      icon:
+                                                          Icon(Icons.more_vert),
+                                                      onPressed: () => {},
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -724,7 +728,7 @@ class TestAppState extends State<MyApp> {
           backgroundColor: Color(0xFF212121),
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-          selectedItemColor: Colors.deepPurple,
+          selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.white,
           type: BottomNavigationBarType.shifting,
           items: [
