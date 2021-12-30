@@ -464,227 +464,250 @@ class TestAppState extends State<MyApp> {
       //CLASSES PAGE
       Scaffold(
         backgroundColor: Color(0xFF121212),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            SizedBox(height: 20.0),
-            Text('Classes',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22, color: Colors.white)),
-            DefaultTabController(
-              length: 2, // length of tabs
-              initialIndex: 0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Container(
-                    child: TabBar(
-                      labelColor: Colors.blue,
-                      unselectedLabelColor: Colors.white,
-                      tabs: [
-                        Tab(text: 'Semester 1'),
-                        Tab(text: 'Semester 2'),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 520, //height of TabBarView
-                    decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(color: Colors.grey, width: 0.5))),
-                    child: TabBarView(
-                      children: <Widget>[
-                        Container(
-                          child: Center(
-                            child: Container(
-                              color: Color(0xFF121212),
-                              width: 600,
-                              height: 520,
-                              child: Container(
-                                width: 500,
-                                child: Container(
-                                  child: Card(
-                                    clipBehavior: Clip.antiAlias,
-                                    color: Color(0xFF3b3b3b),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            padding: EdgeInsets.all(10),
-                                            child: ListView(
-                                              scrollDirection: Axis.vertical,
-                                              children: <Widget>[
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text('AP Biology'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text('US History'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title:
-                                                        Text('Programming 1'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text(
-                                                        'Honors Spanish 3'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text('Band'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text('English 3'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text(
-                                                        'Honors Algebra 2'),
-                                                    trailing: IconButton(
-                                                      icon:
-                                                          Icon(Icons.more_vert),
-                                                      onPressed: () => {
-                                                        _editClass(context),
-                                                      },
+        body: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: MediaQuery.of(context).size.width,
+                minHeight: MediaQuery.of(context).size.height,
+              ),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    SizedBox(height: 20.0),
+                    Text('Classes',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 22, color: Colors.white)),
+                    DefaultTabController(
+                      length: 2, // length of tabs
+                      initialIndex: 0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Container(
+                            child: TabBar(
+                              labelColor: Colors.blue,
+                              unselectedLabelColor: Colors.white,
+                              tabs: [
+                                Tab(text: 'Semester 1'),
+                                Tab(text: 'Semester 2'),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: 520, //height of TabBarView
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    top: BorderSide(
+                                        color: Colors.grey, width: 0.5))),
+                            child: TabBarView(
+                              children: <Widget>[
+                                Container(
+                                  child: Center(
+                                    child: Container(
+                                      color: Color(0xFF121212),
+                                      width: 600,
+                                      height: 520,
+                                      child: Container(
+                                        width: 500,
+                                        child: Container(
+                                          child: Card(
+                                            clipBehavior: Clip.antiAlias,
+                                            color: Color(0xFF3b3b3b),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(10),
+                                                    child: ListView(
+                                                      scrollDirection:
+                                                          Axis.vertical,
+                                                      children: <Widget>[
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'AP Biology'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'US History'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'Programming 1'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'Honors Spanish 3'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text('Band'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'English 3'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'Honors Algebra 2'),
+                                                            trailing:
+                                                                IconButton(
+                                                              icon: Icon(Icons
+                                                                  .more_vert),
+                                                              onPressed: () => {
+                                                                _editClass(
+                                                                    context),
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
+                                          width: 100,
+                                          margin: EdgeInsets.all(20),
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                  width: 100,
-                                  margin: EdgeInsets.all(20),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          child: Center(
-                            child: Container(
-                              color: Color(0xFF121212),
-                              width: 600,
-                              height: 520,
-                              child: Container(
-                                width: 500,
-                                child: Container(
-                                  child: Card(
-                                    clipBehavior: Clip.antiAlias,
-                                    color: Color(0xFF3b3b3b),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            padding: EdgeInsets.all(10),
-                                            child: ListView(
-                                              scrollDirection: Axis.vertical,
-                                              children: <Widget>[
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text('AP Biology'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text('US History'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text('English 3'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text(
-                                                        'Honors Spanish 3'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text('Band'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title:
-                                                        Text('Honors Genetics'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
-                                                  ),
-                                                ),
-                                                Card(
-                                                  child: ListTile(
-                                                    title: Text(
-                                                        'Honors Algebra 2'),
-                                                    trailing:
-                                                        Icon(Icons.more_vert),
+                                Container(
+                                  child: Center(
+                                    child: Container(
+                                      color: Color(0xFF121212),
+                                      width: 600,
+                                      height: 520,
+                                      child: Container(
+                                        width: 500,
+                                        child: Container(
+                                          child: Card(
+                                            clipBehavior: Clip.antiAlias,
+                                            color: Color(0xFF3b3b3b),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(10),
+                                                    child: ListView(
+                                                      scrollDirection:
+                                                          Axis.vertical,
+                                                      children: <Widget>[
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'AP Biology'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'US History'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'English 3'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'Honors Spanish 3'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text('Band'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'Honors Genetics'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                        Card(
+                                                          child: ListTile(
+                                                            title: Text(
+                                                                'Honors Algebra 2'),
+                                                            trailing: Icon(Icons
+                                                                .more_vert),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
+                                          width: 100,
+                                          margin: EdgeInsets.all(20),
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                  width: 100,
-                                  margin: EdgeInsets.all(20),
                                 ),
-                              ),
+                              ],
                             ),
-                          ),
-                        ),
-                      ],
+                          )
+                        ],
+                      ),
                     ),
-                  )
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            )),
       ),
       //CLUBS PAGE
       //TODO: (Create page)
@@ -802,6 +825,7 @@ class TestAppState extends State<MyApp> {
     );
   }
 
+  // This is the pop up for editing classes.
   _editClass(context) {
     Alert(
         style: AlertStyle(
@@ -812,6 +836,7 @@ class TestAppState extends State<MyApp> {
         title: "Edit Class",
         content: Column(
           children: <Widget>[
+            // Class name input feild
             TextField(
               style: TextStyle(
                 color: Colors.white,
@@ -825,7 +850,12 @@ class TestAppState extends State<MyApp> {
                 labelStyle: TextStyle(color: Colors.white),
               ),
             ),
+            // room input feild
             TextField(
+              // limit the string size to a maximum of 4
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(4),
+              ],
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -844,7 +874,7 @@ class TestAppState extends State<MyApp> {
           DialogButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
-              "Done",
+              "Confirm",
               style: TextStyle(color: Colors.white, fontSize: 15),
             ),
           )
