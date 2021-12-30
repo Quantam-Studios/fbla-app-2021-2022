@@ -1,25 +1,10 @@
-//import 'dart:html';
-
-// ignore: import_of_legacy_library_into_null_safe
-//import 'dart:html';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
-    runApp(new MyApp());
-  });
-}
-
-mixin SystemChrome {
-  static setPreferredOrientations(List list) {}
-}
-
-class DeviceOrientation {
-  static var portraitUp;
+  runApp(MaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -35,6 +20,11 @@ class TestAppState extends State<MyApp> {
 
   @override
   build(BuildContext context) {
+    // Force portrait
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     List<Widget> _pages = <Widget>[
       // HOME PAGE STUFF
       Scaffold(
@@ -138,7 +128,7 @@ class TestAppState extends State<MyApp> {
                                           Color(0xFFffffff))),
                               onPressed: () {
                                 setState(() {
-                                  print("scroll to details");
+                                  _onItemTapped(2);
                                 });
                               },
                             ),
@@ -578,7 +568,9 @@ class TestAppState extends State<MyApp> {
                                                     trailing: IconButton(
                                                       icon:
                                                           Icon(Icons.more_vert),
-                                                      onPressed: () => {},
+                                                      onPressed: () => {
+                                                        _editClass(context),
+                                                      },
                                                     ),
                                                   ),
                                                 ),
@@ -808,6 +800,55 @@ class TestAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  _editClass(context) {
+    Alert(
+        style: AlertStyle(
+          backgroundColor: Color(0xff3b3b3b),
+          titleStyle: TextStyle(color: Colors.white),
+        ),
+        context: context,
+        title: "Edit Class",
+        content: Column(
+          children: <Widget>[
+            TextField(
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.format_list_bulleted_rounded,
+                  color: Colors.white,
+                ),
+                labelText: 'Class',
+                labelStyle: TextStyle(color: Colors.white),
+              ),
+            ),
+            TextField(
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.meeting_room_outlined,
+                  color: Colors.white,
+                ),
+                labelText: 'Room',
+                labelStyle: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        buttons: [
+          DialogButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              "Done",
+              style: TextStyle(color: Colors.white, fontSize: 15),
+            ),
+          )
+        ]).show();
   }
 
   //Bottom Bar functionaity

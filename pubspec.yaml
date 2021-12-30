@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
+  rflutter_alert: ^2.0.4
   flutter:
     sdk: flutter
 
