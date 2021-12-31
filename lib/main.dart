@@ -32,274 +32,284 @@ class TestAppState extends State<MyApp> {
           scrollDirection: Axis.vertical,
           children: [
             Container(
-              height: 400,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: FractionalOffset.bottomCenter,
-                  colors: [Color(0xff54BFF8), Color(0xff4C8CF2)],
-                  stops: [0, 1],
+              color: Color(0xff121212),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30.0),
+                  bottomRight: Radius.circular(30.0),
                 ),
-              ),
-              child: CarouselSlider(
-                items: [
-                  //1st container of Slider
-                  // ACTIVITY (Class, lunch, club...)
-                  Container(
-                    margin: EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Container(
-                      width: 400,
-                      height: 600,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 400,
-                            child: Text(
-                              "Activity",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: Text(
-                              "AP Biology",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          //INFO (Room number, times)
-                          Container(
-                              margin: const EdgeInsets.all(10),
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.meeting_room_outlined,
-                                    color: Colors.white,
-                                  ),
-                                  Text(" D201 ",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                      )),
-                                  Icon(
-                                    Icons.access_time,
-                                    color: Colors.white,
-                                  ),
-                                  Text(" 7:30-8:20",
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                      ))
-                                ],
-                              )),
-                          // More Details Button
-                          Container(
-                            height: 60,
-                            alignment: Alignment.bottomCenter,
-                            child: OutlinedButton.icon(
-                              label: Text(
-                                'Classes',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              icon: Icon(Icons.format_list_bulleted_rounded),
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF303030)),
-                                  overlayColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF000000)),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFFffffff))),
-                              onPressed: () {
-                                setState(() {
-                                  _onItemTapped(2);
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                child: Container(
+                  height: 400,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: FractionalOffset.bottomCenter,
+                      colors: [Color(0xff54BFF8), Color(0xff4C8CF2)],
+                      stops: [0, 1],
                     ),
                   ),
-
-                  //2nd container of Slider
-                  //Lunch of the day
-                  Container(
-                    margin: EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Container(
-                      width: 400,
-                      height: 600,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 400,
-                            child: Text(
-                              "Lunch",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: Text(
-                              "Pizza, and other things...",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          //INFO (Room number, times)
-                          Container(
-                              margin: const EdgeInsets.all(5),
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.access_time,
+                  child: CarouselSlider(
+                    items: [
+                      //1st container of Slider
+                      // ACTIVITY (Class, lunch, club...)
+                      Container(
+                        margin: EdgeInsets.all(6.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Container(
+                          width: 400,
+                          height: 600,
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 400,
+                                child: Text(
+                                  "Activity",
+                                  style: TextStyle(
                                     color: Colors.white,
+                                    fontSize: 50,
                                   ),
-                                  Text(" 11:30-12:00",
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                        fontSize: 20,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.all(10),
+                                child: Text(
+                                  "AP Biology",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              //INFO (Room number, times)
+                              Container(
+                                  margin: const EdgeInsets.all(10),
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.meeting_room_outlined,
                                         color: Colors.white,
-                                      ))
-                                ],
-                              )),
-                          // More Details Button
-                          Container(
-                            height: 60,
-                            alignment: Alignment.bottomCenter,
-                            child: OutlinedButton.icon(
-                              label: Text(
-                                'Next Lunch',
-                                style: TextStyle(fontSize: 20),
+                                      ),
+                                      Text(" D201 ",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                          )),
+                                      Icon(
+                                        Icons.access_time,
+                                        color: Colors.white,
+                                      ),
+                                      Text(" 7:30-8:20",
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                          ))
+                                    ],
+                                  )),
+                              // More Details Button
+                              Container(
+                                height: 60,
+                                alignment: Alignment.bottomCenter,
+                                child: OutlinedButton.icon(
+                                  label: Text(
+                                    'Classes',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  icon:
+                                      Icon(Icons.format_list_bulleted_rounded),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF303030)),
+                                      overlayColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF000000)),
+                                      foregroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFFffffff))),
+                                  onPressed: () {
+                                    setState(() {
+                                      _onItemTapped(2);
+                                    });
+                                  },
+                                ),
                               ),
-                              icon: Icon(Icons.fastfood_rounded),
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF303030)),
-                                  overlayColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF000000)),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFFffffff))),
-                              onPressed: () {
-                                setState(() {
-                                  print("Next Lunch");
-                                });
-                              },
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
+
+                      //2nd container of Slider
+                      //Lunch of the day
+                      Container(
+                        margin: EdgeInsets.all(6.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Container(
+                          width: 400,
+                          height: 600,
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 400,
+                                child: Text(
+                                  "Lunch",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 50,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.all(10),
+                                child: Text(
+                                  "Pizza, and other things...",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              //INFO (Room number, times)
+                              Container(
+                                  margin: const EdgeInsets.all(5),
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.access_time,
+                                        color: Colors.white,
+                                      ),
+                                      Text(" 11:30-12:00",
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                          ))
+                                    ],
+                                  )),
+                              // More Details Button
+                              Container(
+                                height: 60,
+                                alignment: Alignment.bottomCenter,
+                                child: OutlinedButton.icon(
+                                  label: Text(
+                                    'Next Lunch',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  icon: Icon(Icons.fastfood_rounded),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF303030)),
+                                      overlayColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF000000)),
+                                      foregroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFFffffff))),
+                                  onPressed: () {
+                                    setState(() {
+                                      print("Next Lunch");
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //3rd container of Slider
+                      // Clubs after school
+                      Container(
+                        margin: EdgeInsets.all(6.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Container(
+                          width: 400,
+                          height: 600,
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 400,
+                                child: Text(
+                                  "After School",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 48,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.all(10),
+                                child: Text(
+                                  "Makers Club",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              // More Details Button
+                              Container(
+                                height: 60,
+                                alignment: Alignment.bottomCenter,
+                                child: OutlinedButton.icon(
+                                  label: Text(
+                                    'Details',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  icon: Icon(Icons.assignment_rounded),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF303030)),
+                                      overlayColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF000000)),
+                                      foregroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFFffffff))),
+                                  onPressed: () {
+                                    setState(() {
+                                      print("scroll to details");
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+
+                    //Slider Container properties
+                    options: CarouselOptions(
+                      height: 300.0,
+                      enlargeCenterPage: true,
+                      autoPlay: true,
+                      aspectRatio: 16 / 9,
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      enableInfiniteScroll: true,
+                      autoPlayAnimationDuration: Duration(milliseconds: 800),
+                      viewportFraction: 0.8,
                     ),
                   ),
-
-                  //3rd container of Slider
-                  // Clubs after school
-                  Container(
-                    margin: EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Container(
-                      width: 400,
-                      height: 600,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 400,
-                            child: Text(
-                              "After School",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 48,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: Text(
-                              "Makers Club",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          // More Details Button
-                          Container(
-                            height: 60,
-                            alignment: Alignment.bottomCenter,
-                            child: OutlinedButton.icon(
-                              label: Text(
-                                'Details',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              icon: Icon(Icons.assignment_rounded),
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF303030)),
-                                  overlayColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF000000)),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFFffffff))),
-                              onPressed: () {
-                                setState(() {
-                                  print("scroll to details");
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-
-                //Slider Container properties
-                options: CarouselOptions(
-                  height: 300.0,
-                  enlargeCenterPage: true,
-                  autoPlay: true,
-                  aspectRatio: 16 / 9,
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  enableInfiniteScroll: true,
-                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  viewportFraction: 0.8,
                 ),
               ),
             ),
@@ -311,6 +321,21 @@ class TestAppState extends State<MyApp> {
               child: Container(
                 width: 600,
                 child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        topRight: Radius.circular(25),
+                        bottomLeft: Radius.circular(25),
+                        bottomRight: Radius.circular(25)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        spreadRadius: 3,
+                        blurRadius: 7,
+                        offset: Offset(0, 2), // changes position of shadow
+                      ),
+                    ],
+                  ),
                   child: Card(
                     clipBehavior: Clip.antiAlias,
                     color: Color(0xFF3b3b3b),
@@ -343,38 +368,66 @@ class TestAppState extends State<MyApp> {
                               scrollDirection: Axis.vertical,
                               children: <Widget>[
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('AP Biology'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('US History'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('Programming 1'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('Honors Spanish 3'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('Band'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('English 3'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('Honors Algebra 2'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -529,60 +582,123 @@ class TestAppState extends State<MyApp> {
                                                           Axis.vertical,
                                                       children: <Widget>[
                                                         Card(
+                                                          color: Colors.blue,
                                                           child: ListTile(
                                                             title: Text(
-                                                                'AP Biology'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
                                                             title: Text(
-                                                                'US History'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
                                                             title: Text(
-                                                                'Programming 1'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
                                                             title: Text(
-                                                                'Honors Spanish 3'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
-                                                            title: Text('Band'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                            title: Text(
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
                                                             title: Text(
-                                                                'English 3'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
                                                             title: Text(
-                                                                'Honors Algebra 2'),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
                                                             trailing:
                                                                 IconButton(
-                                                              icon: Icon(Icons
-                                                                  .more_vert),
+                                                              icon: Icon(
+                                                                Icons.more_vert,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
                                                               onPressed: () => {
                                                                 _editClass(
                                                                     context),
@@ -630,58 +746,129 @@ class TestAppState extends State<MyApp> {
                                                           Axis.vertical,
                                                       children: <Widget>[
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
                                                             title: Text(
-                                                                'AP Biology'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
                                                             title: Text(
-                                                                'US History'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
                                                             title: Text(
-                                                                'English 3'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
                                                             title: Text(
-                                                                'Honors Spanish 3'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
-                                                            title: Text('Band'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                            title: Text(
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
                                                             title: Text(
-                                                                'Honors Genetics'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing: Icon(
+                                                              Icons.more_vert,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
                                                           ),
                                                         ),
                                                         Card(
+                                                          color:
+                                                              Color(0xff5b5b5b),
                                                           child: ListTile(
                                                             title: Text(
-                                                                'Honors Algebra 2'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
+                                                              'US History',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            trailing:
+                                                                IconButton(
+                                                              icon: Icon(
+                                                                Icons.more_vert,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                              onPressed: () => {
+                                                                _editClass(
+                                                                    context),
+                                                              },
+                                                            ),
                                                           ),
                                                         ),
                                                       ],
@@ -739,43 +926,50 @@ class TestAppState extends State<MyApp> {
             ),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Color(0xFF212121),
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.white,
-          type: BottomNavigationBarType.shifting,
-          items: [
-            BottomNavigationBarItem(
-              backgroundColor: Color(0xFF212121),
-              icon: new Icon(
-                Icons.house_rounded,
+        // Bottom Bar
+        bottomNavigationBar: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+          child: BottomNavigationBar(
+            backgroundColor: Color(0xFF212121),
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.white,
+            type: BottomNavigationBarType.shifting,
+            items: [
+              BottomNavigationBarItem(
+                backgroundColor: Color(0xFF212121),
+                icon: new Icon(
+                  Icons.house_rounded,
+                ),
+                label: 'Home',
               ),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: Color(0xFF212121),
-              icon: new Icon(
-                Icons.calendar_today_rounded,
+              BottomNavigationBarItem(
+                backgroundColor: Color(0xFF212121),
+                icon: new Icon(
+                  Icons.calendar_today_rounded,
+                ),
+                label: 'Planner',
               ),
-              label: 'Planner',
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: Color(0xFF212121),
-              icon: Icon(
-                Icons.format_list_bulleted_rounded,
+              BottomNavigationBarItem(
+                backgroundColor: Color(0xFF212121),
+                icon: Icon(
+                  Icons.format_list_bulleted_rounded,
+                ),
+                label: 'Classes',
               ),
-              label: 'Classes',
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: Color(0xFF212121),
-              icon: Icon(
-                Icons.local_activity_rounded,
+              BottomNavigationBarItem(
+                backgroundColor: Color(0xFF212121),
+                icon: Icon(
+                  Icons.local_activity_rounded,
+                ),
+                label: 'Clubs',
               ),
-              label: 'Clubs',
-            ),
-          ],
+            ],
+          ),
         ),
         body: Center(
           child: _pages.elementAt(_selectedIndex), //New
