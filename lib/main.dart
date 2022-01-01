@@ -3,69 +3,60 @@ import 'package:carousel_slider/carousel_slider.dart';
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'classes.dart';
+import 'sharedRefs.dart';
 
-// Shared Preferences Configuration for global use
-// CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
+// IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
 const keyClasses = 'classes';
-List<String> classes = List.filled(7, 'Class');
-
-//TEST
-const keyTest = 'test';
-int testVal = 0;
-
-class SharedPrefs {
-  // Main handling of shared prefs
-  static SharedPreferences? _sharedPrefs;
-  // Because this class won't always create a new instance Factory must be used because it can return caches.
-  factory SharedPrefs() => SharedPrefs._internal();
-
-  SharedPrefs._internal();
-
-  // Update shared prefs with changes
-  Future<void> init() async {
-    _sharedPrefs ??= await SharedPreferences.getInstance();
-  }
-
-  // TEST
-  int? get _testVal => _sharedPrefs!.getInt(keyTest);
-
-  set _testVal(value) {
-    _sharedPrefs!.setInt(keyTest, value);
-  }
-
-  // Class Card Update Methods
-  List<String>? get Classes => _sharedPrefs!.getStringList(keyClasses);
-
-  set Classes(value) {
-    _sharedPrefs!.setStringList(keyClasses, value);
-  }
-}
+List<String> classes = List<String>.filled(7, 'Name');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SharedPrefs().init();
   runApp(MaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    //return _MyAppState();
     return TestAppState();
   }
 }
 
 class TestAppState extends State<MyApp> {
+  // Shared Preferences Configuration
+  SharedPref sharedPref = SharedPref();
+  // Functions for loading class info
+  Class classSave = Class();
+  Class classLoad = Class();
+
+  // async function to avoid returning Future<Instance>
+  // IMPORTANT: without await the method will return Future<Instance>
+  loadSharedPrefs() async {
+    sharedPref.test(keyClasses);
+    try {
+      Class _class = Class.fromJson(await sharedPref.read(keyClasses, 'name'));
+      setState(() {
+        classLoad = _class;
+      });
+    } catch (Exception) {
+      print('Failed');
+    }
+  }
+
   // Bottom Navigation
   int _selectedIndex = 0;
-  // Edit Class Pop Up controller
+  // Edit Class Pop Up controllers
+  // Class controller
   final classEditController = TextEditingController(text: '');
+  // Room Controller
+  final classRoomEditController = TextEditingController(text: '');
+
   // clean up closed pop up widget controllers.
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
     classEditController.dispose();
+    classRoomEditController.dispose();
     super.dispose();
   }
 
@@ -632,131 +623,41 @@ class TestAppState extends State<MyApp> {
                                                       scrollDirection:
                                                           Axis.vertical,
                                                       children: <Widget>[
-                                                        Card(
-                                                          color: Colors.blue,
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing:
-                                                                IconButton(
-                                                              icon: Icon(
-                                                                Icons.more_vert,
-                                                                color: Colors
-                                                                    .white,
+                                                        // Dynamically create a class card for each elemnt in the given array
+                                                        for (var i = 0;
+                                                            i < classes.length;
+                                                            i++)
+                                                          // Class card
+                                                          Card(
+                                                            color: Color(
+                                                                0xff5b5b5b),
+                                                            child: ListTile(
+                                                              title: Text(
+                                                                '${classLoad.name}',
+                                                                key:
+                                                                    UniqueKey(),
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white),
                                                               ),
-                                                              onPressed: () => {
-                                                                _editClass(
-                                                                    context, 0),
-                                                              },
+                                                              trailing:
+                                                                  // The edit class button
+                                                                  IconButton(
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .more_vert,
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
+                                                                onPressed: () =>
+                                                                    {
+                                                                  _editClass(
+                                                                      context,
+                                                                      i),
+                                                                },
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
                                                       ],
                                                     ),
                                                   ),
@@ -798,7 +699,7 @@ class TestAppState extends State<MyApp> {
                                                       children: <Widget>[
                                                         // Dynamically create a class card for each elemnt in the given array
                                                         for (var i = 0;
-                                                            i < test.length;
+                                                            i < classes.length;
                                                             i++)
                                                           // Class card
                                                           Card(
@@ -806,7 +707,7 @@ class TestAppState extends State<MyApp> {
                                                                 0xff5b5b5b),
                                                             child: ListTile(
                                                               title: Text(
-                                                                ' Class: ${SharedPrefs()._testVal}',
+                                                                '${classLoad.name}',
                                                                 key:
                                                                     UniqueKey(),
                                                                 style: TextStyle(
@@ -998,26 +899,14 @@ class TestAppState extends State<MyApp> {
     );
   }
 
-  // SAVED DATA
-  // test saved data
-  List test = List<int>.filled(7, 4);
-
-  // Save Classes
+  // TODO: Make the index matter, and prevent updating all class cards for performance
+  // Save classes when edited
   _classEdit(int index) {
-    SharedPrefs().Classes![index] = classEditController.text;
+    classSave.name = classEditController.text;
+    classSave.room = UniqueKey().toString();
+    sharedPref.save(keyClasses, classSave);
+    loadSharedPrefs();
   }
-
-  // TEST
-  _testEdit(int index) {
-    SharedPrefs()._testVal = int.parse(classEditController.text);
-  }
-
-  // _saveClassEdit(int index) async {
-  //   final key = 'hi';
-  //   final value = int.parse(classEditController.text);
-  //   prefs.setInt(key, value);
-  //   print('saved $value at index: $index');
-  // }
 
   // This is the pop up for editing classes.
   // function called draws a pop up
@@ -1075,8 +964,7 @@ class TestAppState extends State<MyApp> {
               Navigator.pop(context),
               // save the data
               print(index.toString()),
-              _testEdit(index),
-              print("Success"),
+              _classEdit(index)
             },
             child: Text(
               "Confirm",
