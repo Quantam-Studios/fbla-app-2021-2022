@@ -1,9 +1,50 @@
+// Packages and Dependencies
 import 'package:carousel_slider/carousel_slider.dart';
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+// Shared Preferences Configuration for global use
+// CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
+const keyClasses = 'classes';
+List<String> classes = List.filled(7, 'Class');
+
+//TEST
+const keyTest = 'test';
+int testVal = 0;
+
+class SharedPrefs {
+  // Main handling of shared prefs
+  static SharedPreferences? _sharedPrefs;
+  // Because this class won't always create a new instance Factory must be used because it can return caches.
+  factory SharedPrefs() => SharedPrefs._internal();
+
+  SharedPrefs._internal();
+
+  // Update shared prefs with changes
+  Future<void> init() async {
+    _sharedPrefs ??= await SharedPreferences.getInstance();
+  }
+
+  // TEST
+  int? get _testVal => _sharedPrefs!.getInt(keyTest);
+
+  set _testVal(value) {
+    _sharedPrefs!.setInt(keyTest, value);
+  }
+
+  // Class Card Update Methods
+  List<String>? get Classes => _sharedPrefs!.getStringList(keyClasses);
+
+  set Classes(value) {
+    _sharedPrefs!.setStringList(keyClasses, value);
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPrefs().init();
   runApp(MaterialApp(home: MyApp()));
 }
 
@@ -16,7 +57,17 @@ class MyApp extends StatefulWidget {
 }
 
 class TestAppState extends State<MyApp> {
+  // Bottom Navigation
   int _selectedIndex = 0;
+  // Edit Class Pop Up controller
+  final classEditController = TextEditingController(text: '');
+  // clean up closed pop up widget controllers.
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    classEditController.dispose();
+    super.dispose();
+  }
 
   @override
   build(BuildContext context) {
@@ -306,7 +357,7 @@ class TestAppState extends State<MyApp> {
                       aspectRatio: 16 / 9,
                       autoPlayCurve: Curves.fastOutSlowIn,
                       enableInfiniteScroll: true,
-                      autoPlayAnimationDuration: Duration(milliseconds: 800),
+                      autoPlayAnimationDuration: Duration(milliseconds: 700),
                       viewportFraction: 0.8,
                     ),
                   ),
@@ -332,7 +383,7 @@ class TestAppState extends State<MyApp> {
                         color: Colors.black.withOpacity(0.5),
                         spreadRadius: 3,
                         blurRadius: 7,
-                        offset: Offset(0, 2), // changes position of shadow
+                        offset: Offset(0, 0), // changes position of shadow
                       ),
                     ],
                   ),
@@ -701,7 +752,7 @@ class TestAppState extends State<MyApp> {
                                                               ),
                                                               onPressed: () => {
                                                                 _editClass(
-                                                                    context),
+                                                                    context, 0),
                                                               },
                                                             ),
                                                           ),
@@ -745,132 +796,41 @@ class TestAppState extends State<MyApp> {
                                                       scrollDirection:
                                                           Axis.vertical,
                                                       children: <Widget>[
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.more_vert,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          color:
-                                                              Color(0xff5b5b5b),
-                                                          child: ListTile(
-                                                            title: Text(
-                                                              'US History',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .white),
-                                                            ),
-                                                            trailing:
-                                                                IconButton(
-                                                              icon: Icon(
-                                                                Icons.more_vert,
-                                                                color: Colors
-                                                                    .white,
+                                                        // Dynamically create a class card for each elemnt in the given array
+                                                        for (var i = 0;
+                                                            i < test.length;
+                                                            i++)
+                                                          // Class card
+                                                          Card(
+                                                            color: Color(
+                                                                0xff5b5b5b),
+                                                            child: ListTile(
+                                                              title: Text(
+                                                                ' Class: ${SharedPrefs()._testVal}',
+                                                                key:
+                                                                    UniqueKey(),
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white),
                                                               ),
-                                                              onPressed: () => {
-                                                                _editClass(
-                                                                    context),
-                                                              },
+                                                              trailing:
+                                                                  // The edit class button
+                                                                  IconButton(
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .more_vert,
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
+                                                                onPressed: () =>
+                                                                    {
+                                                                  _editClass(
+                                                                      context,
+                                                                      i),
+                                                                },
+                                                              ),
                                                             ),
                                                           ),
-                                                        ),
                                                       ],
                                                     ),
                                                   ),
@@ -905,12 +865,19 @@ class TestAppState extends State<MyApp> {
       ),
     ];
     return MaterialApp(
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          brightness: Brightness.dark,
+        ),
+      ),
       home: Scaffold(
         backgroundColor: Color(0xFF121212),
+        // Top Navigation Bar
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Color(0xFF212121),
-          title: Text('CCHS'),
+          title: Text('CCHS Hub'),
+          shadowColor: Colors.black.withOpacity(0.5),
           actions: <Widget>[
             // Settings
             Builder(
@@ -927,48 +894,60 @@ class TestAppState extends State<MyApp> {
           ],
         ),
         // Bottom Bar
-        bottomNavigationBar: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.0),
-            topRight: Radius.circular(20.0),
-          ),
-          child: BottomNavigationBar(
-            backgroundColor: Color(0xFF212121),
-            currentIndex: _selectedIndex,
-            onTap: _onItemTapped,
-            selectedItemColor: Colors.blue,
-            unselectedItemColor: Colors.white,
-            type: BottomNavigationBarType.shifting,
-            items: [
-              BottomNavigationBarItem(
-                backgroundColor: Color(0xFF212121),
-                icon: new Icon(
-                  Icons.house_rounded,
-                ),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                backgroundColor: Color(0xFF212121),
-                icon: new Icon(
-                  Icons.calendar_today_rounded,
-                ),
-                label: 'Planner',
-              ),
-              BottomNavigationBarItem(
-                backgroundColor: Color(0xFF212121),
-                icon: Icon(
-                  Icons.format_list_bulleted_rounded,
-                ),
-                label: 'Classes',
-              ),
-              BottomNavigationBarItem(
-                backgroundColor: Color(0xFF212121),
-                icon: Icon(
-                  Icons.local_activity_rounded,
-                ),
-                label: 'Clubs',
-              ),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  spreadRadius: 0,
+                  blurRadius: 10),
             ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
+            child: BottomNavigationBar(
+              backgroundColor: Color(0xFF212121),
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              selectedItemColor: Colors.blue,
+              unselectedItemColor: Colors.white,
+              type: BottomNavigationBarType.shifting,
+              items: [
+                BottomNavigationBarItem(
+                  backgroundColor: Color(0xFF212121),
+                  icon: new Icon(
+                    Icons.house_rounded,
+                  ),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Color(0xFF212121),
+                  icon: new Icon(
+                    Icons.calendar_today_rounded,
+                  ),
+                  label: 'Planner',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Color(0xFF212121),
+                  icon: Icon(
+                    Icons.format_list_bulleted_rounded,
+                  ),
+                  label: 'Classes',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Color(0xFF212121),
+                  icon: Icon(
+                    Icons.local_activity_rounded,
+                  ),
+                  label: 'Clubs',
+                ),
+              ],
+            ),
           ),
         ),
         body: Center(
@@ -1019,8 +998,31 @@ class TestAppState extends State<MyApp> {
     );
   }
 
+  // SAVED DATA
+  // test saved data
+  List test = List<int>.filled(7, 4);
+
+  // Save Classes
+  _classEdit(int index) {
+    SharedPrefs().Classes![index] = classEditController.text;
+  }
+
+  // TEST
+  _testEdit(int index) {
+    SharedPrefs()._testVal = int.parse(classEditController.text);
+  }
+
+  // _saveClassEdit(int index) async {
+  //   final key = 'hi';
+  //   final value = int.parse(classEditController.text);
+  //   prefs.setInt(key, value);
+  //   print('saved $value at index: $index');
+  // }
+
   // This is the pop up for editing classes.
-  _editClass(context) {
+  // function called draws a pop up
+  _editClass(context, int index) {
+    // Actual pop up object
     Alert(
         style: AlertStyle(
           backgroundColor: Color(0xff3b3b3b),
@@ -1032,6 +1034,7 @@ class TestAppState extends State<MyApp> {
           children: <Widget>[
             // Class name input feild
             TextField(
+              controller: classEditController,
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -1064,9 +1067,17 @@ class TestAppState extends State<MyApp> {
             ),
           ],
         ),
+        // Confirm button
         buttons: [
           DialogButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => {
+              // get rid of pop up
+              Navigator.pop(context),
+              // save the data
+              print(index.toString()),
+              _testEdit(index),
+              print("Success"),
+            },
             child: Text(
               "Confirm",
               style: TextStyle(color: Colors.white, fontSize: 15),
