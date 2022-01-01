@@ -37,9 +37,11 @@ class TestAppState extends State<MyApp> {
       Class _class = Class.fromJson(await sharedPref.read(keyClasses, 'name'));
       setState(() {
         classLoad = _class;
+        sharedPref.test(keyClasses);
       });
     } catch (Exception) {
-      print('Failed');
+      print('loadSharedPrefs() Failed');
+      sharedPref.test(keyClasses);
     }
   }
 
@@ -633,7 +635,7 @@ class TestAppState extends State<MyApp> {
                                                                 0xff5b5b5b),
                                                             child: ListTile(
                                                               title: Text(
-                                                                '${classLoad.name}',
+                                                                '${classLoad.name} Room: ${classLoad.room}',
                                                                 key:
                                                                     UniqueKey(),
                                                                 style: TextStyle(
@@ -707,7 +709,7 @@ class TestAppState extends State<MyApp> {
                                                                 0xff5b5b5b),
                                                             child: ListTile(
                                                               title: Text(
-                                                                '${classLoad.name}',
+                                                                '${classLoad.name} Room: ${classLoad.room}',
                                                                 key:
                                                                     UniqueKey(),
                                                                 style: TextStyle(
@@ -903,7 +905,7 @@ class TestAppState extends State<MyApp> {
   // Save classes when edited
   _classEdit(int index) {
     classSave.name = classEditController.text;
-    classSave.room = UniqueKey().toString();
+    classSave.room = classRoomEditController.text;
     sharedPref.save(keyClasses, classSave);
     loadSharedPrefs();
   }
@@ -924,6 +926,10 @@ class TestAppState extends State<MyApp> {
             // Class name input feild
             TextField(
               controller: classEditController,
+              // limit the string size to a maximum of 20
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(20),
+              ],
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -938,6 +944,7 @@ class TestAppState extends State<MyApp> {
             ),
             // room input feild
             TextField(
+              controller: classRoomEditController,
               // limit the string size to a maximum of 4
               inputFormatters: [
                 LengthLimitingTextInputFormatter(4),
@@ -963,7 +970,7 @@ class TestAppState extends State<MyApp> {
               // get rid of pop up
               Navigator.pop(context),
               // save the data
-              print(index.toString()),
+              print('The index of the save data is $index'),
               _classEdit(index)
             },
             child: Text(
@@ -978,6 +985,10 @@ class TestAppState extends State<MyApp> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      // Grab previous session data for classes page only when the page is active
+      if (_selectedIndex == 2) {
+        loadSharedPrefs();
+      }
     });
   }
 }

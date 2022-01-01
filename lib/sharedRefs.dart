@@ -7,7 +7,7 @@ class SharedPref {
     if (prefs.getString(key) != null) {
       return json.decode(prefs.getString(key) ?? 'Missing');
     } else {
-      print('Failed');
+      print('read($key) Failed');
       return 'Failed';
     }
   }
