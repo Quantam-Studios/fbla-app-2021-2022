@@ -22,6 +22,7 @@ environment:
 
 dependencies:
   rflutter_alert: ^2.0.4
+  shared_preferences:
   flutter:
     sdk: flutter
 

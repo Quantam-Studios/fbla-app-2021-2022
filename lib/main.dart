@@ -1,22 +1,121 @@
+// Packages and Dependencies
 import 'package:carousel_slider/carousel_slider.dart';
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import 'package:rflutter_alert/rflutter_alert.dart';
+// Custom made dependencies
+import 'classes.dart';
+import 'sharedRefs.dart';
+import 'classesSaveLoad.dart';
 
-void main() {
+// IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
+// Main array for class keys
+ClassKeys keyClasses = ClassKeys();
+// KEy for class counts
+String keyClassCount = 'classCount';
+
+// Max and min values of semesters
+const maxClasses = 7;
+const minClasses = 1;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
+  // General set up of states
   @override
   State<StatefulWidget> createState() {
-    //return _MyAppState();
     return TestAppState();
   }
 }
 
 class TestAppState extends State<MyApp> {
+  // Shared Preferences Configuration
+  SharedPref sharedPref = SharedPref();
+
+  // Functions for loading class info
+  Class classSave = Class();
+  Class classLoad = Class();
+
+  // Arrays for saved and load lists
+  Classes classesSaved = Classes();
+  Classes classesLoaded = Classes();
+
+  // Total Classes in each semester
+  SemClassCounts semClassCountsLoad = SemClassCounts();
+  SemClassCounts semClassCountsSave = SemClassCounts();
+
+  // async function to avoid returning Future<Instance>
+  // IMPORTANT: without await the method will return Future<Instance>
+  // TODO: Make a better solution to updating values, and loading them
+  loadSharedPrefs(int semester) async {
+    // Update class counts
+    try {
+      setState(() {
+        semClassCountsLoad.sem1ClassCount = semClassCountsSave.sem1ClassCount;
+        semClassCountsLoad.sem2ClassCount = semClassCountsSave.sem2ClassCount;
+        print('${semClassCountsLoad.sem1ClassCount} ' +
+            ' ${semClassCountsLoad.sem2ClassCount}');
+      });
+    } catch (Exception) {
+      print('loadSharedPrefs() semClassCounts Failed');
+      print(Exception);
+    }
+
+    // Update class data for each element in each semester
+    if (semester == 0) {
+      // Runs for the amount of either total semester classes
+      for (int i = 0; i < semClassCountsLoad.sem1ClassCount; i++) {
+        try {
+          Class _class =
+              Class.fromJson(await sharedPref.read(keyClasses.sem1Keys[i]));
+          setState(() {
+            classesLoaded.sem1Classes[i] = _class;
+          });
+        } catch (Exception) {
+          print('loadSharedPrefs() Failed');
+          print(keyClasses.sem1Keys[i]);
+          print(Exception);
+        }
+      }
+    } else if (semester == 1) {
+      // Runs for the amount of either total semester classes
+      for (int i = 0; i < semClassCountsLoad.sem2ClassCount; i++) {
+        try {
+          Class _class =
+              Class.fromJson(await sharedPref.read(keyClasses.sem2Keys[i]));
+          setState(() {
+            classesLoaded.sem2Classes[i] = _class;
+            print(classesLoaded.sem2Classes[i].name);
+          });
+        } catch (Exception) {
+          print('loadSharedPrefs() Failed');
+          print(keyClasses.sem2Keys[i]);
+          print(classesLoaded.sem2Classes[i].name);
+          print(Exception);
+        }
+      }
+    }
+  }
+
+  // Bottom Navigation
   int _selectedIndex = 0;
+  // Edit Class Pop Up controllers
+  // Class controller
+  final classEditController = TextEditingController(text: '');
+  // Room Controller
+  final classRoomEditController = TextEditingController(text: '');
+
+  // clean up closed pop up widget controllers.
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    classEditController.dispose();
+    classRoomEditController.dispose();
+    super.dispose();
+  }
 
   @override
   build(BuildContext context) {
@@ -32,274 +131,284 @@ class TestAppState extends State<MyApp> {
           scrollDirection: Axis.vertical,
           children: [
             Container(
-              height: 400,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: FractionalOffset.bottomCenter,
-                  colors: [Color(0xff54BFF8), Color(0xff4C8CF2)],
-                  stops: [0, 1],
+              color: Color(0xff121212),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30.0),
+                  bottomRight: Radius.circular(30.0),
                 ),
-              ),
-              child: CarouselSlider(
-                items: [
-                  //1st container of Slider
-                  // ACTIVITY (Class, lunch, club...)
-                  Container(
-                    margin: EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Container(
-                      width: 400,
-                      height: 600,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 400,
-                            child: Text(
-                              "Activity",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: Text(
-                              "AP Biology",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          //INFO (Room number, times)
-                          Container(
-                              margin: const EdgeInsets.all(10),
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.meeting_room_outlined,
-                                    color: Colors.white,
-                                  ),
-                                  Text(" D201 ",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                      )),
-                                  Icon(
-                                    Icons.access_time,
-                                    color: Colors.white,
-                                  ),
-                                  Text(" 7:30-8:20",
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.white,
-                                      ))
-                                ],
-                              )),
-                          // More Details Button
-                          Container(
-                            height: 60,
-                            alignment: Alignment.bottomCenter,
-                            child: OutlinedButton.icon(
-                              label: Text(
-                                'Classes',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              icon: Icon(Icons.format_list_bulleted_rounded),
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF303030)),
-                                  overlayColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF000000)),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFFffffff))),
-                              onPressed: () {
-                                setState(() {
-                                  _onItemTapped(2);
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                child: Container(
+                  height: 400,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: FractionalOffset.bottomCenter,
+                      colors: [Color(0xff54BFF8), Color(0xff4C8CF2)],
+                      stops: [0, 1],
                     ),
                   ),
-
-                  //2nd container of Slider
-                  //Lunch of the day
-                  Container(
-                    margin: EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Container(
-                      width: 400,
-                      height: 600,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 400,
-                            child: Text(
-                              "Lunch",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: Text(
-                              "Pizza, and other things...",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          //INFO (Room number, times)
-                          Container(
-                              margin: const EdgeInsets.all(5),
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.access_time,
+                  child: CarouselSlider(
+                    items: [
+                      //1st container of Slider
+                      // ACTIVITY (Class, lunch, club...)
+                      Container(
+                        margin: EdgeInsets.all(6.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Container(
+                          width: 400,
+                          height: 600,
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 400,
+                                child: Text(
+                                  "Activity",
+                                  style: TextStyle(
                                     color: Colors.white,
+                                    fontSize: 50,
                                   ),
-                                  Text(" 11:30-12:00",
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                        fontSize: 20,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.all(10),
+                                child: Text(
+                                  "AP Biology",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              //INFO (Room number, times)
+                              Container(
+                                  margin: const EdgeInsets.all(10),
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.meeting_room_outlined,
                                         color: Colors.white,
-                                      ))
-                                ],
-                              )),
-                          // More Details Button
-                          Container(
-                            height: 60,
-                            alignment: Alignment.bottomCenter,
-                            child: OutlinedButton.icon(
-                              label: Text(
-                                'Next Lunch',
-                                style: TextStyle(fontSize: 20),
+                                      ),
+                                      Text(" D201 ",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                          )),
+                                      Icon(
+                                        Icons.access_time,
+                                        color: Colors.white,
+                                      ),
+                                      Text(" 7:30-8:20",
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                          ))
+                                    ],
+                                  )),
+                              // More Details Button
+                              Container(
+                                height: 60,
+                                alignment: Alignment.bottomCenter,
+                                child: OutlinedButton.icon(
+                                  label: Text(
+                                    'Classes',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  icon:
+                                      Icon(Icons.format_list_bulleted_rounded),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF303030)),
+                                      overlayColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF000000)),
+                                      foregroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFFffffff))),
+                                  onPressed: () {
+                                    setState(() {
+                                      _onItemTapped(2);
+                                    });
+                                  },
+                                ),
                               ),
-                              icon: Icon(Icons.fastfood_rounded),
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF303030)),
-                                  overlayColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF000000)),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFFffffff))),
-                              onPressed: () {
-                                setState(() {
-                                  print("Next Lunch");
-                                });
-                              },
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
+
+                      //2nd container of Slider
+                      //Lunch of the day
+                      Container(
+                        margin: EdgeInsets.all(6.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Container(
+                          width: 400,
+                          height: 600,
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 400,
+                                child: Text(
+                                  "Lunch",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 50,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.all(10),
+                                child: Text(
+                                  "Pizza, and other things...",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              //INFO (Room number, times)
+                              Container(
+                                  margin: const EdgeInsets.all(5),
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.access_time,
+                                        color: Colors.white,
+                                      ),
+                                      Text(" 11:30-12:00",
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                          ))
+                                    ],
+                                  )),
+                              // More Details Button
+                              Container(
+                                height: 60,
+                                alignment: Alignment.bottomCenter,
+                                child: OutlinedButton.icon(
+                                  label: Text(
+                                    'Next Lunch',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  icon: Icon(Icons.fastfood_rounded),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF303030)),
+                                      overlayColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF000000)),
+                                      foregroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFFffffff))),
+                                  onPressed: () {
+                                    setState(() {
+                                      print("Next Lunch");
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //3rd container of Slider
+                      // Clubs after school
+                      Container(
+                        margin: EdgeInsets.all(6.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Container(
+                          width: 400,
+                          height: 600,
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 400,
+                                child: Text(
+                                  "After School",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 48,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.all(10),
+                                child: Text(
+                                  "Makers Club",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              // More Details Button
+                              Container(
+                                height: 60,
+                                alignment: Alignment.bottomCenter,
+                                child: OutlinedButton.icon(
+                                  label: Text(
+                                    'Details',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  icon: Icon(Icons.assignment_rounded),
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF303030)),
+                                      overlayColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFF000000)),
+                                      foregroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              Color(0xFFffffff))),
+                                  onPressed: () {
+                                    setState(() {
+                                      print("scroll to details");
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+
+                    //Slider Container properties
+                    options: CarouselOptions(
+                      height: 300.0,
+                      enlargeCenterPage: true,
+                      autoPlay: true,
+                      aspectRatio: 16 / 9,
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      enableInfiniteScroll: true,
+                      autoPlayAnimationDuration: Duration(milliseconds: 700),
+                      viewportFraction: 0.8,
                     ),
                   ),
-
-                  //3rd container of Slider
-                  // Clubs after school
-                  Container(
-                    margin: EdgeInsets.all(6.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Container(
-                      width: 400,
-                      height: 600,
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 400,
-                            child: Text(
-                              "After School",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 48,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(10),
-                            child: Text(
-                              "Makers Club",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          // More Details Button
-                          Container(
-                            height: 60,
-                            alignment: Alignment.bottomCenter,
-                            child: OutlinedButton.icon(
-                              label: Text(
-                                'Details',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              icon: Icon(Icons.assignment_rounded),
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF303030)),
-                                  overlayColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFF000000)),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Color(0xFFffffff))),
-                              onPressed: () {
-                                setState(() {
-                                  print("scroll to details");
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-
-                //Slider Container properties
-                options: CarouselOptions(
-                  height: 300.0,
-                  enlargeCenterPage: true,
-                  autoPlay: true,
-                  aspectRatio: 16 / 9,
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  enableInfiniteScroll: true,
-                  autoPlayAnimationDuration: Duration(milliseconds: 800),
-                  viewportFraction: 0.8,
                 ),
               ),
             ),
@@ -311,6 +420,21 @@ class TestAppState extends State<MyApp> {
               child: Container(
                 width: 600,
                 child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        topRight: Radius.circular(25),
+                        bottomLeft: Radius.circular(25),
+                        bottomRight: Radius.circular(25)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        spreadRadius: 3,
+                        blurRadius: 7,
+                        offset: Offset(0, 0), // changes position of shadow
+                      ),
+                    ],
+                  ),
                   child: Card(
                     clipBehavior: Clip.antiAlias,
                     color: Color(0xFF3b3b3b),
@@ -343,38 +467,66 @@ class TestAppState extends State<MyApp> {
                               scrollDirection: Axis.vertical,
                               children: <Widget>[
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('AP Biology'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('US History'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('Programming 1'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('Honors Spanish 3'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('Band'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('English 3'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                                 Card(
+                                  color: Color(0xff5b5b5b),
                                   child: ListTile(
-                                    title: Text('Honors Algebra 2'),
+                                    title: Text(
+                                      'US History',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -496,206 +648,190 @@ class TestAppState extends State<MyApp> {
                             ),
                           ),
                           Container(
-                            height: 520, //height of TabBarView
+                            height: 620, //height of TabBarView
                             decoration: BoxDecoration(
                                 border: Border(
                                     top: BorderSide(
                                         color: Colors.grey, width: 0.5))),
                             child: TabBarView(
                               children: <Widget>[
+                                // Class container
                                 Container(
-                                  child: Center(
-                                    child: Container(
-                                      color: Color(0xFF121212),
-                                      width: 600,
-                                      height: 520,
-                                      child: Container(
-                                        width: 500,
+                                  child: Column(
+                                    children: [
+                                      Center(
                                         child: Container(
-                                          child: Card(
-                                            clipBehavior: Clip.antiAlias,
-                                            color: Color(0xFF3b3b3b),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Expanded(
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(10),
-                                                    child: ListView(
-                                                      scrollDirection:
-                                                          Axis.vertical,
-                                                      children: <Widget>[
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'AP Biology'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'US History'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'Programming 1'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'Honors Spanish 3'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text('Band'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'English 3'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'Honors Algebra 2'),
-                                                            trailing:
-                                                                IconButton(
-                                                              icon: Icon(Icons
-                                                                  .more_vert),
-                                                              onPressed: () => {
-                                                                _editClass(
-                                                                    context),
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
+                                          color: Color(0xFF121212),
+                                          width: 500,
+                                          height: 520,
+                                          child: Container(
+                                            width: 500,
+                                            child: Container(
+                                              child: Card(
+                                                clipBehavior: Clip.antiAlias,
+                                                color: Color(0xFF3b3b3b),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.0),
                                                 ),
-                                              ],
+                                                child: Column(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Container(
+                                                        padding:
+                                                            EdgeInsets.all(10),
+                                                        child: ListView(
+                                                          scrollDirection:
+                                                              Axis.vertical,
+                                                          children: <Widget>[
+                                                            // Dynamically create a class card for each elemnt in the given array
+                                                            for (var i = 0;
+                                                                i <
+                                                                    semClassCountsLoad
+                                                                        .sem1ClassCount;
+                                                                i++)
+                                                              // Class card
+                                                              Card(
+                                                                color: Color(
+                                                                    0xff5b5b5b),
+                                                                child: ListTile(
+                                                                  title: Text(
+                                                                    '${classesLoaded.sem1Classes[i].name} Room: ${classesLoaded.sem1Classes[i].room}',
+                                                                    key:
+                                                                        UniqueKey(),
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                  trailing:
+                                                                      // The edit class button
+                                                                      IconButton(
+                                                                    icon: Icon(
+                                                                      Icons
+                                                                          .more_vert,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    onPressed:
+                                                                        () => {
+                                                                      _editClass(
+                                                                          context,
+                                                                          i,
+                                                                          0),
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              width: 100,
+                                              margin: EdgeInsets.all(20),
                                             ),
                                           ),
-                                          width: 100,
-                                          margin: EdgeInsets.all(20),
                                         ),
                                       ),
-                                    ),
+                                      FloatingActionButton(
+                                        onPressed: () => {_addClass(0)},
+                                        tooltip: 'Add Class',
+                                        child: Icon(Icons.add),
+                                        backgroundColor: Colors.blue,
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Container(
-                                  child: Center(
-                                    child: Container(
-                                      color: Color(0xFF121212),
-                                      width: 600,
-                                      height: 520,
-                                      child: Container(
-                                        width: 500,
+                                  child: Column(
+                                    children: [
+                                      Center(
                                         child: Container(
-                                          child: Card(
-                                            clipBehavior: Clip.antiAlias,
-                                            color: Color(0xFF3b3b3b),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Expanded(
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(10),
-                                                    child: ListView(
-                                                      scrollDirection:
-                                                          Axis.vertical,
-                                                      children: <Widget>[
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'AP Biology'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'US History'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'English 3'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'Honors Spanish 3'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text('Band'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'Honors Genetics'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                        Card(
-                                                          child: ListTile(
-                                                            title: Text(
-                                                                'Honors Algebra 2'),
-                                                            trailing: Icon(Icons
-                                                                .more_vert),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
+                                          color: Color(0xFF121212),
+                                          width: 500,
+                                          height: 520,
+                                          child: Container(
+                                            width: 500,
+                                            child: Container(
+                                              child: Card(
+                                                clipBehavior: Clip.antiAlias,
+                                                color: Color(0xFF3b3b3b),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.0),
                                                 ),
-                                              ],
+                                                child: Column(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Container(
+                                                        padding:
+                                                            EdgeInsets.all(10),
+                                                        child: ListView(
+                                                          scrollDirection:
+                                                              Axis.vertical,
+                                                          children: <Widget>[
+                                                            // Dynamically create a class card for each elemnt in the given array
+                                                            for (var i = 0;
+                                                                i <
+                                                                    semClassCountsLoad
+                                                                        .sem2ClassCount;
+                                                                i++)
+                                                              // Class card
+                                                              Card(
+                                                                color: Color(
+                                                                    0xff5b5b5b),
+                                                                child: ListTile(
+                                                                  title: Text(
+                                                                    '${classesLoaded.sem2Classes[i].name} Room: ${classesLoaded.sem2Classes[i].room}',
+                                                                    key:
+                                                                        UniqueKey(),
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                  trailing:
+                                                                      // The edit class button
+                                                                      IconButton(
+                                                                    icon: Icon(
+                                                                      Icons
+                                                                          .more_vert,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    onPressed:
+                                                                        () => {
+                                                                      _editClass(
+                                                                          context,
+                                                                          i,
+                                                                          1),
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              width: 100,
+                                              margin: EdgeInsets.all(20),
                                             ),
                                           ),
-                                          width: 100,
-                                          margin: EdgeInsets.all(20),
                                         ),
                                       ),
-                                    ),
+                                      FloatingActionButton(
+                                        onPressed: () => {_addClass(1)},
+                                        tooltip: 'Add Class',
+                                        child: Icon(Icons.add),
+                                        backgroundColor: Colors.blue,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -718,12 +854,19 @@ class TestAppState extends State<MyApp> {
       ),
     ];
     return MaterialApp(
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          brightness: Brightness.dark,
+        ),
+      ),
       home: Scaffold(
         backgroundColor: Color(0xFF121212),
+        // Top Navigation Bar
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Color(0xFF212121),
-          title: Text('CCHS'),
+          title: Text('CCHS Hub'),
+          shadowColor: Colors.black.withOpacity(0.5),
           actions: <Widget>[
             // Settings
             Builder(
@@ -739,43 +882,62 @@ class TestAppState extends State<MyApp> {
             ),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Color(0xFF212121),
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.white,
-          type: BottomNavigationBarType.shifting,
-          items: [
-            BottomNavigationBarItem(
-              backgroundColor: Color(0xFF212121),
-              icon: new Icon(
-                Icons.house_rounded,
-              ),
-              label: 'Home',
+        // Bottom Bar
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  spreadRadius: 0,
+                  blurRadius: 10),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
             ),
-            BottomNavigationBarItem(
+            child: BottomNavigationBar(
               backgroundColor: Color(0xFF212121),
-              icon: new Icon(
-                Icons.calendar_today_rounded,
-              ),
-              label: 'Planner',
+              currentIndex: _selectedIndex,
+              onTap: _onItemTapped,
+              selectedItemColor: Colors.blue,
+              unselectedItemColor: Colors.white,
+              type: BottomNavigationBarType.shifting,
+              items: [
+                BottomNavigationBarItem(
+                  backgroundColor: Color(0xFF212121),
+                  icon: new Icon(
+                    Icons.house_rounded,
+                  ),
+                  label: 'Home',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Color(0xFF212121),
+                  icon: new Icon(
+                    Icons.calendar_today_rounded,
+                  ),
+                  label: 'Planner',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Color(0xFF212121),
+                  icon: Icon(
+                    Icons.format_list_bulleted_rounded,
+                  ),
+                  label: 'Classes',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Color(0xFF212121),
+                  icon: Icon(
+                    Icons.local_activity_rounded,
+                  ),
+                  label: 'Clubs',
+                ),
+              ],
             ),
-            BottomNavigationBarItem(
-              backgroundColor: Color(0xFF212121),
-              icon: Icon(
-                Icons.format_list_bulleted_rounded,
-              ),
-              label: 'Classes',
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: Color(0xFF212121),
-              icon: Icon(
-                Icons.local_activity_rounded,
-              ),
-              label: 'Clubs',
-            ),
-          ],
+          ),
         ),
         body: Center(
           child: _pages.elementAt(_selectedIndex), //New
@@ -825,8 +987,28 @@ class TestAppState extends State<MyApp> {
     );
   }
 
+  // TODO: prevent updating all class cards for performance
+  // Save classes when edited
+  _classEdit(int index, int semester) {
+    if (semester == 0) {
+      classesSaved.sem1Classes[index].name = classEditController.text;
+      classesSaved.sem1Classes[index].room = classRoomEditController.text;
+      sharedPref.save(
+          keyClasses.sem1Keys[index], classesSaved.sem1Classes[index]);
+      loadSharedPrefs(0);
+    } else if (semester == 1) {
+      classesSaved.sem2Classes[index].name = classEditController.text;
+      classesSaved.sem2Classes[index].room = classRoomEditController.text;
+      sharedPref.save(
+          keyClasses.sem2Keys[index], classesSaved.sem2Classes[index]);
+      loadSharedPrefs(1);
+    }
+  }
+
   // This is the pop up for editing classes.
-  _editClass(context) {
+  // function called draws a pop up
+  _editClass(context, int index, int semester) {
+    // Actual pop up object
     Alert(
         style: AlertStyle(
           backgroundColor: Color(0xff3b3b3b),
@@ -838,6 +1020,11 @@ class TestAppState extends State<MyApp> {
           children: <Widget>[
             // Class name input feild
             TextField(
+              controller: classEditController,
+              // limit the string size to a maximum of 20
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(20),
+              ],
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -852,6 +1039,7 @@ class TestAppState extends State<MyApp> {
             ),
             // room input feild
             TextField(
+              controller: classRoomEditController,
               // limit the string size to a maximum of 4
               inputFormatters: [
                 LengthLimitingTextInputFormatter(4),
@@ -870,9 +1058,15 @@ class TestAppState extends State<MyApp> {
             ),
           ],
         ),
+        // Confirm button
         buttons: [
           DialogButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => {
+              // get rid of pop up
+              Navigator.pop(context),
+              // save the data
+              _classEdit(index, semester)
+            },
             child: Text(
               "Confirm",
               style: TextStyle(color: Colors.white, fontSize: 15),
@@ -885,6 +1079,30 @@ class TestAppState extends State<MyApp> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      // Grab previous session data for classes page only when the page is active
+      if (_selectedIndex == 2) {
+        loadSharedPrefs(0);
+        loadSharedPrefs(1);
+      }
     });
+  }
+
+  // Add Classes functionailty
+  void _addClass(int semester) {
+    // Semester 1 code
+    if (semester == 0) {
+      if (semClassCountsLoad.sem1ClassCount < maxClasses) {
+        semClassCountsSave.sem1ClassCount += 1;
+        sharedPref.save(keyClassCount, semClassCountsSave);
+        loadSharedPrefs(0);
+      }
+      // Semecter 2 code
+    } else if (semester == 1) {
+      if (semClassCountsLoad.sem2ClassCount < maxClasses) {
+        semClassCountsSave.sem2ClassCount += 1;
+        sharedPref.save(keyClassCount, semClassCountsSave);
+        loadSharedPrefs(1);
+      }
+    }
   }
 }

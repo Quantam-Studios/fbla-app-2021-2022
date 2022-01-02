@@ -1,5 +1,84 @@
 // THIS FILE CONTAINS SNIPPETS OF CODE THAT MIGHT BE USEFUL LAYER ON IN DEVELOPMENT
 
+// TEST FILE SAVING WITH PATH PACKAGE
+  // String state;
+  // Future<Directory> _appDocDir;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   widget.storage.readData().then((String value) {
+  //     setState(() {
+  //       state = value;
+  //     });
+  //   });
+  // }
+
+  // Future<File> writeData() async {
+  //   setState(() {
+  //     state = classEditController.text;
+  //     classEditController.text = '';
+  //   });
+
+  //   return widget.storage.writeData(state);
+  // }
+
+  // void getAppDirectory() {
+  //   setState(() {
+  //     _appDocDir = getApplicationDocumentsDirectory();
+  //   });
+  // }
+
+// // TEST
+// class TestClass {
+//   final String name;
+//   final String room;
+//   TestClass({required this.name, required this.room});
+// }
+
+  // static Map<String, dynamic> toMap(Class Class) => {
+  //       'name': Class.name,
+  //       'room': Class.name,
+  //     };
+
+  // static String encode(List<Class> classList) => json.encode(
+  //       classList.map<Map<String, dynamic>>((c) => Class.toMap(c)).toList(),
+  //     );
+
+  // static List<Class> decode(String classList) =>
+  //     (json.decode(classList) as List<dynamic>)
+  //         .map<Class>((item) => Class.fromJson(item))
+  //         .toList();
+
+// Storage class
+// class Storage {
+//   Future<String> get localPath async {
+//     final dir = await getApplicationDocumentsDirectory();
+//     return dir.path;
+//   }
+
+//   Future<File> get localFile async {
+//     final path = await localPath;
+//     return File('$path/db.txt');
+//   }
+
+//   Future<String> readData() async {
+//     try {
+//       final file = await localFile;
+//       String body = await file.readAsString();
+
+//       return body;
+//     } catch (e) {
+//       return e.toString();
+//     }
+//   }
+
+//   Future<File> writeData(String data) async {
+//     final file = await localFile;
+//     return file.writeAsString("$data");
+//   }
+// }
+
 
 /*
 class _MyAppState extends State<MyApp> {
