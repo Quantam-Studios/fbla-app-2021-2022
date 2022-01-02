@@ -7,6 +7,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'classes.dart';
 import 'sharedRefs.dart';
 import 'classesSaveLoad.dart';
+import 'socialPage.dart';
 
 // IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
 // Main array for class keys
@@ -847,6 +848,8 @@ class TestAppState extends State<MyApp> {
         size: 150,
         color: Colors.deepPurple,
       ),
+      //Socials PAGE
+      SocialPage(),
     ];
     return MaterialApp(
       theme: ThemeData(
@@ -930,6 +933,13 @@ class TestAppState extends State<MyApp> {
                     Icons.local_activity_rounded,
                   ),
                   label: 'Clubs',
+                ),
+                BottomNavigationBarItem(
+                  backgroundColor: Color(0xFF212121),
+                  icon: Icon(
+                    Icons.share,
+                  ),
+                  label: 'Social',
                 ),
               ],
             ),
