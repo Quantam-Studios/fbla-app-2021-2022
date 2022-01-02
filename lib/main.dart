@@ -100,6 +100,12 @@ class TestAppState extends State<MyApp> {
     }
   }
 
+  @override
+  void initState() {
+    loadSharedPrefs(0);
+    super.initState();
+  }
+
   // Bottom Navigation
   int _selectedIndex = 0;
   // Edit Class Pop Up controllers
@@ -412,7 +418,7 @@ class TestAppState extends State<MyApp> {
                 ),
               ),
             ),
-            // classes for the day
+            // Tasks for the day
             Container(
               color: Color(0xFF121212),
               width: 400,
@@ -447,15 +453,20 @@ class TestAppState extends State<MyApp> {
                           title: Center(
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.format_list_bulleted_rounded,
-                                  color: Colors.white,
-                                ),
-                                Text(
-                                  ' Your classes for the day.',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
+                                Center(
+                                    child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.format_list_bulleted_rounded,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      ' Your classes for the day.',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    ),
+                                  ],
+                                )),
                               ],
                             ),
                           ),
@@ -466,105 +477,89 @@ class TestAppState extends State<MyApp> {
                             child: ListView(
                               scrollDirection: Axis.vertical,
                               children: <Widget>[
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
+                                for (var i = 0;
+                                    i < semClassCountsLoad.sem1ClassCount;
+                                    i++)
+                                  // Class card
+                                  Container(
+                                    decoration: new BoxDecoration(
+                                      boxShadow: [
+                                        new BoxShadow(
+                                          color: Colors.black.withOpacity(0.5),
+                                          blurRadius: 5.0,
+                                        ),
+                                      ],
+                                    ),
+                                    // content of container
+                                    child: Card(
+                                      color: Color(0xff5b5b5b),
+                                      child: ListTile(
+                                          title: Text.rich(TextSpan(
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                '${i.toString()}.  ${classesLoaded.sem1Classes[i].name}   ',
+                                          ),
+                                          WidgetSpan(
+                                            child: Icon(
+                                              Icons.meeting_room_outlined,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                ' ${classesLoaded.sem1Classes[i].room}',
+                                          ),
+                                        ],
+                                      ))),
                                     ),
                                   ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
                               ],
                             ),
                           ),
                         ),
-                        ButtonBar(
-                          alignment: MainAxisAlignment.start,
-                          children: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                primary: Colors.black.withOpacity(0.8),
-                                shape: const BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(5),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                // go to the classes page
-                                _onItemTapped(2);
-                              },
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    'View All Classes',
-                                    style: TextStyle(
-                                      color: Colors.white,
+                        Container(
+                          child: ButtonBar(
+                              alignment: MainAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        primary: Colors.black.withOpacity(0.5),
+                                        backgroundColor:
+                                            Colors.black.withOpacity(0.5),
+                                        shape: const BeveledRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(5),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        // go to the classes page
+                                        _onItemTapped(2);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Text(
+                                            'View All Classes',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.arrow_forward_rounded,
+                                            color: Colors.white,
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward_rounded,
-                                    color: Colors.white,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
+                                  ],
+                                )
+                              ]),
                         ),
                       ],
                     ),
@@ -902,6 +897,7 @@ class TestAppState extends State<MyApp> {
             child: BottomNavigationBar(
               backgroundColor: Color(0xFF212121),
               currentIndex: _selectedIndex,
+              showSelectedLabels: true,
               onTap: _onItemTapped,
               selectedItemColor: Colors.blue,
               unselectedItemColor: Colors.white,
