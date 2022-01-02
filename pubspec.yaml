@@ -22,10 +22,9 @@ environment:
 
 dependencies:
   rflutter_alert: ^2.0.4
+  shared_preferences:
   flutter:
     sdk: flutter
-  shared_preferences:
-  path_provider:
 
 
   # The following adds the Cupertino Icons font to your application.

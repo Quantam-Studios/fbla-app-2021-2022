@@ -1,29 +1,22 @@
 // Packages and Dependencies
-
-import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:path_provider/path_provider.dart';
 // Custom made dependencies
 import 'classes.dart';
 import 'sharedRefs.dart';
+import 'classesSaveLoad.dart';
 
 // IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
-const keyClasses = [
-  'class1',
-  'class2',
-  'class3',
-  'class4',
-  'class5',
-  'class6',
-  'class7'
-];
-List<String> classes = List<String>.filled(7, 'Name');
+// Main array for class keys
+ClassKeys keyClasses = ClassKeys();
+// KEy for class counts
+String keyClassCount = 'classCount';
 
-List<Class> classesList =
-    List<Class>.filled(7, Class(name: 'blank', room: 'blank'));
+// Max and min values of semesters
+const maxClasses = 7;
+const minClasses = 1;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,24 +38,64 @@ class TestAppState extends State<MyApp> {
   // Functions for loading class info
   Class classSave = Class();
   Class classLoad = Class();
-  List<Class> classesSaved =
-      List<Class>.filled(7, Class(name: 'blank', room: 'blank'));
-  List<Class> classesLoad =
-      List<Class>.filled(7, Class(name: 'blank', room: 'blank'));
+
+  // Arrays for saved and load lists
+  Classes classesSaved = Classes();
+  Classes classesLoaded = Classes();
+
+  // Total Classes in each semester
+  SemClassCounts semClassCountsLoad = SemClassCounts();
+  SemClassCounts semClassCountsSave = SemClassCounts();
 
   // async function to avoid returning Future<Instance>
   // IMPORTANT: without await the method will return Future<Instance>
-  loadSharedPrefs() async {
-    for (int i = 0; i < keyClasses.length; i++) {
-      try {
-        Class _class = Class.fromJson(await sharedPref.read(keyClasses[i]));
-        setState(() {
-          classesLoad[i] = _class;
-          sharedPref.test(keyClasses[i]);
-        });
-      } catch (Exception) {
-        print('loadSharedPrefs() Failed');
-        sharedPref.test(keyClasses[i]);
+  // TODO: Make a better solution to updating values, and loading them
+  loadSharedPrefs(int semester) async {
+    // Update class counts
+    try {
+      setState(() {
+        semClassCountsLoad.sem1ClassCount = semClassCountsSave.sem1ClassCount;
+        semClassCountsLoad.sem2ClassCount = semClassCountsSave.sem2ClassCount;
+        print('${semClassCountsLoad.sem1ClassCount} ' +
+            ' ${semClassCountsLoad.sem2ClassCount}');
+      });
+    } catch (Exception) {
+      print('loadSharedPrefs() semClassCounts Failed');
+      print(Exception);
+    }
+
+    // Update class data for each element in each semester
+    if (semester == 0) {
+      // Runs for the amount of either total semester classes
+      for (int i = 0; i < semClassCountsLoad.sem1ClassCount; i++) {
+        try {
+          Class _class =
+              Class.fromJson(await sharedPref.read(keyClasses.sem1Keys[i]));
+          setState(() {
+            classesLoaded.sem1Classes[i] = _class;
+          });
+        } catch (Exception) {
+          print('loadSharedPrefs() Failed');
+          print(keyClasses.sem1Keys[i]);
+          print(Exception);
+        }
+      }
+    } else if (semester == 1) {
+      // Runs for the amount of either total semester classes
+      for (int i = 0; i < semClassCountsLoad.sem2ClassCount; i++) {
+        try {
+          Class _class =
+              Class.fromJson(await sharedPref.read(keyClasses.sem2Keys[i]));
+          setState(() {
+            classesLoaded.sem2Classes[i] = _class;
+            print(classesLoaded.sem2Classes[i].name);
+          });
+        } catch (Exception) {
+          print('loadSharedPrefs() Failed');
+          print(keyClasses.sem2Keys[i]);
+          print(classesLoaded.sem2Classes[i].name);
+          print(Exception);
+        }
       }
     }
   }
@@ -615,159 +648,190 @@ class TestAppState extends State<MyApp> {
                             ),
                           ),
                           Container(
-                            height: 520, //height of TabBarView
+                            height: 620, //height of TabBarView
                             decoration: BoxDecoration(
                                 border: Border(
                                     top: BorderSide(
                                         color: Colors.grey, width: 0.5))),
                             child: TabBarView(
                               children: <Widget>[
+                                // Class container
                                 Container(
-                                  child: Center(
-                                    child: Container(
-                                      color: Color(0xFF121212),
-                                      width: 600,
-                                      height: 520,
-                                      child: Container(
-                                        width: 500,
+                                  child: Column(
+                                    children: [
+                                      Center(
                                         child: Container(
-                                          child: Card(
-                                            clipBehavior: Clip.antiAlias,
-                                            color: Color(0xFF3b3b3b),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Expanded(
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(10),
-                                                    child: ListView(
-                                                      scrollDirection:
-                                                          Axis.vertical,
-                                                      children: <Widget>[
-                                                        // Dynamically create a class card for each elemnt in the given array
-                                                        for (var i = 0;
-                                                            i < classes.length;
-                                                            i++)
-                                                          // Class card
-                                                          Card(
-                                                            color: Color(
-                                                                0xff5b5b5b),
-                                                            child: ListTile(
-                                                              title: Text(
-                                                                '${classesLoad[i].name} Room: ${classesLoad[i].room}',
-                                                                key:
-                                                                    UniqueKey(),
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                              trailing:
-                                                                  // The edit class button
-                                                                  IconButton(
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .more_vert,
-                                                                  color: Colors
-                                                                      .white,
-                                                                ),
-                                                                onPressed: () =>
-                                                                    {
-                                                                  _editClass(
-                                                                      context,
-                                                                      i),
-                                                                },
-                                                              ),
-                                                            ),
-                                                          ),
-                                                      ],
-                                                    ),
-                                                  ),
+                                          color: Color(0xFF121212),
+                                          width: 500,
+                                          height: 520,
+                                          child: Container(
+                                            width: 500,
+                                            child: Container(
+                                              child: Card(
+                                                clipBehavior: Clip.antiAlias,
+                                                color: Color(0xFF3b3b3b),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.0),
                                                 ),
-                                              ],
+                                                child: Column(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Container(
+                                                        padding:
+                                                            EdgeInsets.all(10),
+                                                        child: ListView(
+                                                          scrollDirection:
+                                                              Axis.vertical,
+                                                          children: <Widget>[
+                                                            // Dynamically create a class card for each elemnt in the given array
+                                                            for (var i = 0;
+                                                                i <
+                                                                    semClassCountsLoad
+                                                                        .sem1ClassCount;
+                                                                i++)
+                                                              // Class card
+                                                              Card(
+                                                                color: Color(
+                                                                    0xff5b5b5b),
+                                                                child: ListTile(
+                                                                  title: Text(
+                                                                    '${classesLoaded.sem1Classes[i].name} Room: ${classesLoaded.sem1Classes[i].room}',
+                                                                    key:
+                                                                        UniqueKey(),
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                  trailing:
+                                                                      // The edit class button
+                                                                      IconButton(
+                                                                    icon: Icon(
+                                                                      Icons
+                                                                          .more_vert,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    onPressed:
+                                                                        () => {
+                                                                      _editClass(
+                                                                          context,
+                                                                          i,
+                                                                          0),
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              width: 100,
+                                              margin: EdgeInsets.all(20),
                                             ),
                                           ),
-                                          width: 100,
-                                          margin: EdgeInsets.all(20),
                                         ),
                                       ),
-                                    ),
+                                      FloatingActionButton(
+                                        onPressed: () => {_addClass(0)},
+                                        tooltip: 'Add Class',
+                                        child: Icon(Icons.add),
+                                        backgroundColor: Colors.blue,
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 Container(
-                                  child: Center(
-                                    child: Container(
-                                      color: Color(0xFF121212),
-                                      width: 600,
-                                      height: 520,
-                                      child: Container(
-                                        width: 500,
+                                  child: Column(
+                                    children: [
+                                      Center(
                                         child: Container(
-                                          child: Card(
-                                            clipBehavior: Clip.antiAlias,
-                                            color: Color(0xFF3b3b3b),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Expanded(
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(10),
-                                                    child: ListView(
-                                                      scrollDirection:
-                                                          Axis.vertical,
-                                                      children: <Widget>[
-                                                        // Dynamically create a class card for each elemnt in the given array
-                                                        for (var i = 0;
-                                                            i < classes.length;
-                                                            i++)
-                                                          // Class card
-                                                          Card(
-                                                            color: Color(
-                                                                0xff5b5b5b),
-                                                            child: ListTile(
-                                                              title: Text(
-                                                                '${classesLoad[i].name} Room: ${classesLoad[i].room}',
-                                                                key:
-                                                                    UniqueKey(),
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .white),
-                                                              ),
-                                                              trailing:
-                                                                  // The edit class button
-                                                                  IconButton(
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .more_vert,
-                                                                  color: Colors
-                                                                      .white,
-                                                                ),
-                                                                onPressed: () =>
-                                                                    {
-                                                                  _editClass(
-                                                                      context,
-                                                                      i),
-                                                                },
-                                                              ),
-                                                            ),
-                                                          ),
-                                                      ],
-                                                    ),
-                                                  ),
+                                          color: Color(0xFF121212),
+                                          width: 500,
+                                          height: 520,
+                                          child: Container(
+                                            width: 500,
+                                            child: Container(
+                                              child: Card(
+                                                clipBehavior: Clip.antiAlias,
+                                                color: Color(0xFF3b3b3b),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15.0),
                                                 ),
-                                              ],
+                                                child: Column(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Container(
+                                                        padding:
+                                                            EdgeInsets.all(10),
+                                                        child: ListView(
+                                                          scrollDirection:
+                                                              Axis.vertical,
+                                                          children: <Widget>[
+                                                            // Dynamically create a class card for each elemnt in the given array
+                                                            for (var i = 0;
+                                                                i <
+                                                                    semClassCountsLoad
+                                                                        .sem2ClassCount;
+                                                                i++)
+                                                              // Class card
+                                                              Card(
+                                                                color: Color(
+                                                                    0xff5b5b5b),
+                                                                child: ListTile(
+                                                                  title: Text(
+                                                                    '${classesLoaded.sem2Classes[i].name} Room: ${classesLoaded.sem2Classes[i].room}',
+                                                                    key:
+                                                                        UniqueKey(),
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                  trailing:
+                                                                      // The edit class button
+                                                                      IconButton(
+                                                                    icon: Icon(
+                                                                      Icons
+                                                                          .more_vert,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    onPressed:
+                                                                        () => {
+                                                                      _editClass(
+                                                                          context,
+                                                                          i,
+                                                                          1),
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              width: 100,
+                                              margin: EdgeInsets.all(20),
                                             ),
                                           ),
-                                          width: 100,
-                                          margin: EdgeInsets.all(20),
                                         ),
                                       ),
-                                    ),
+                                      FloatingActionButton(
+                                        onPressed: () => {_addClass(1)},
+                                        tooltip: 'Add Class',
+                                        child: Icon(Icons.add),
+                                        backgroundColor: Colors.blue,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -925,16 +989,25 @@ class TestAppState extends State<MyApp> {
 
   // TODO: prevent updating all class cards for performance
   // Save classes when edited
-  _classEdit(int index) {
-    classesSaved[index].name = classEditController.text;
-    classesSaved[index].room = classRoomEditController.text;
-    sharedPref.save(keyClasses[index], classesSaved[index]);
-    loadSharedPrefs();
+  _classEdit(int index, int semester) {
+    if (semester == 0) {
+      classesSaved.sem1Classes[index].name = classEditController.text;
+      classesSaved.sem1Classes[index].room = classRoomEditController.text;
+      sharedPref.save(
+          keyClasses.sem1Keys[index], classesSaved.sem1Classes[index]);
+      loadSharedPrefs(0);
+    } else if (semester == 1) {
+      classesSaved.sem2Classes[index].name = classEditController.text;
+      classesSaved.sem2Classes[index].room = classRoomEditController.text;
+      sharedPref.save(
+          keyClasses.sem2Keys[index], classesSaved.sem2Classes[index]);
+      loadSharedPrefs(1);
+    }
   }
 
   // This is the pop up for editing classes.
   // function called draws a pop up
-  _editClass(context, int index) {
+  _editClass(context, int index, int semester) {
     // Actual pop up object
     Alert(
         style: AlertStyle(
@@ -992,8 +1065,7 @@ class TestAppState extends State<MyApp> {
               // get rid of pop up
               Navigator.pop(context),
               // save the data
-              print('The index of the save data is $index'),
-              _classEdit(index)
+              _classEdit(index, semester)
             },
             child: Text(
               "Confirm",
@@ -1009,36 +1081,28 @@ class TestAppState extends State<MyApp> {
       _selectedIndex = index;
       // Grab previous session data for classes page only when the page is active
       if (_selectedIndex == 2) {
-        loadSharedPrefs();
+        loadSharedPrefs(0);
+        loadSharedPrefs(1);
       }
     });
   }
-}
 
-class Storage {
-  Future<String> get localPath async {
-    final dir = await getApplicationDocumentsDirectory();
-    return dir.path;
-  }
-
-  Future<File> get localFile async {
-    final path = await localPath;
-    return File('$path/db.txt');
-  }
-
-  Future<String> readData() async {
-    try {
-      final file = await localFile;
-      String body = await file.readAsString();
-
-      return body;
-    } catch (e) {
-      return e.toString();
+  // Add Classes functionailty
+  void _addClass(int semester) {
+    // Semester 1 code
+    if (semester == 0) {
+      if (semClassCountsLoad.sem1ClassCount < maxClasses) {
+        semClassCountsSave.sem1ClassCount += 1;
+        sharedPref.save(keyClassCount, semClassCountsSave);
+        loadSharedPrefs(0);
+      }
+      // Semecter 2 code
+    } else if (semester == 1) {
+      if (semClassCountsLoad.sem2ClassCount < maxClasses) {
+        semClassCountsSave.sem2ClassCount += 1;
+        sharedPref.save(keyClassCount, semClassCountsSave);
+        loadSharedPrefs(1);
+      }
     }
-  }
-
-  Future<File> writeData(String data) async {
-    final file = await localFile;
-    return file.writeAsString("$data");
   }
 }
