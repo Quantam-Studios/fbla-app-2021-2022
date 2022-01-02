@@ -1,5 +1,37 @@
 // THIS FILE CONTAINS SNIPPETS OF CODE THAT MIGHT BE USEFUL LAYER ON IN DEVELOPMENT
 
+// TEST FILE SAVING WITH PATH PACKAGE
+  // String state;
+  // Future<Directory> _appDocDir;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   widget.storage.readData().then((String value) {
+  //     setState(() {
+  //       state = value;
+  //     });
+  //   });
+  // }
+
+  // Future<File> writeData() async {
+  //   setState(() {
+  //     state = classEditController.text;
+  //     classEditController.text = '';
+  //   });
+
+  //   return widget.storage.writeData(state);
+  // }
+
+  // void getAppDirectory() {
+  //   setState(() {
+  //     _appDocDir = getApplicationDocumentsDirectory();
+  //   });
+  // }
+
+
+
+
 
 /*
 class _MyAppState extends State<MyApp> {

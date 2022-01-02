@@ -1,14 +1,29 @@
 // Packages and Dependencies
+
+import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:path_provider/path_provider.dart';
+// Custom made dependencies
 import 'classes.dart';
 import 'sharedRefs.dart';
 
 // IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
-const keyClasses = 'classes';
+const keyClasses = [
+  'class1',
+  'class2',
+  'class3',
+  'class4',
+  'class5',
+  'class6',
+  'class7'
+];
 List<String> classes = List<String>.filled(7, 'Name');
+
+List<Class> classesList =
+    List<Class>.filled(7, Class(name: 'blank', room: 'blank'));
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +31,7 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+  // General set up of states
   @override
   State<StatefulWidget> createState() {
     return TestAppState();
@@ -25,23 +41,29 @@ class MyApp extends StatefulWidget {
 class TestAppState extends State<MyApp> {
   // Shared Preferences Configuration
   SharedPref sharedPref = SharedPref();
+
   // Functions for loading class info
   Class classSave = Class();
   Class classLoad = Class();
+  List<Class> classesSaved =
+      List<Class>.filled(7, Class(name: 'blank', room: 'blank'));
+  List<Class> classesLoad =
+      List<Class>.filled(7, Class(name: 'blank', room: 'blank'));
 
   // async function to avoid returning Future<Instance>
   // IMPORTANT: without await the method will return Future<Instance>
   loadSharedPrefs() async {
-    sharedPref.test(keyClasses);
-    try {
-      Class _class = Class.fromJson(await sharedPref.read(keyClasses, 'name'));
-      setState(() {
-        classLoad = _class;
-        sharedPref.test(keyClasses);
-      });
-    } catch (Exception) {
-      print('loadSharedPrefs() Failed');
-      sharedPref.test(keyClasses);
+    for (int i = 0; i < keyClasses.length; i++) {
+      try {
+        Class _class = Class.fromJson(await sharedPref.read(keyClasses[i]));
+        setState(() {
+          classesLoad[i] = _class;
+          sharedPref.test(keyClasses[i]);
+        });
+      } catch (Exception) {
+        print('loadSharedPrefs() Failed');
+        sharedPref.test(keyClasses[i]);
+      }
     }
   }
 
@@ -635,7 +657,7 @@ class TestAppState extends State<MyApp> {
                                                                 0xff5b5b5b),
                                                             child: ListTile(
                                                               title: Text(
-                                                                '${classLoad.name} Room: ${classLoad.room}',
+                                                                '${classesLoad[i].name} Room: ${classesLoad[i].room}',
                                                                 key:
                                                                     UniqueKey(),
                                                                 style: TextStyle(
@@ -709,7 +731,7 @@ class TestAppState extends State<MyApp> {
                                                                 0xff5b5b5b),
                                                             child: ListTile(
                                                               title: Text(
-                                                                '${classLoad.name} Room: ${classLoad.room}',
+                                                                '${classesLoad[i].name} Room: ${classesLoad[i].room}',
                                                                 key:
                                                                     UniqueKey(),
                                                                 style: TextStyle(
@@ -901,12 +923,12 @@ class TestAppState extends State<MyApp> {
     );
   }
 
-  // TODO: Make the index matter, and prevent updating all class cards for performance
+  // TODO: prevent updating all class cards for performance
   // Save classes when edited
   _classEdit(int index) {
-    classSave.name = classEditController.text;
-    classSave.room = classRoomEditController.text;
-    sharedPref.save(keyClasses, classSave);
+    classesSaved[index].name = classEditController.text;
+    classesSaved[index].room = classRoomEditController.text;
+    sharedPref.save(keyClasses[index], classesSaved[index]);
     loadSharedPrefs();
   }
 
@@ -990,5 +1012,33 @@ class TestAppState extends State<MyApp> {
         loadSharedPrefs();
       }
     });
+  }
+}
+
+class Storage {
+  Future<String> get localPath async {
+    final dir = await getApplicationDocumentsDirectory();
+    return dir.path;
+  }
+
+  Future<File> get localFile async {
+    final path = await localPath;
+    return File('$path/db.txt');
+  }
+
+  Future<String> readData() async {
+    try {
+      final file = await localFile;
+      String body = await file.readAsString();
+
+      return body;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  Future<File> writeData(String data) async {
+    final file = await localFile;
+    return file.writeAsString("$data");
   }
 }
