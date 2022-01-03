@@ -8,6 +8,7 @@ import 'classes.dart';
 import 'sharedRefs.dart';
 import 'classesSaveLoad.dart';
 import 'socialPage.dart';
+import 'timeHandling.dart';
 
 // IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
 // Main array for class keys
@@ -1171,7 +1172,8 @@ class TestAppState extends State<MyApp> {
               // get rid of pop up
               Navigator.pop(context),
               // save the data
-              _classEdit(index, semester)
+              _classEdit(index, semester),
+              getCurrentTime()
             },
             child: Text(
               "Confirm",
