@@ -45,7 +45,7 @@ class TestAppState extends State<MyApp> {
   Class classSave = Class();
   Class classLoad = Class();
 
-  // Arrays for saved and load lists
+  // Arrays for saved and load lists of classes
   Classes classesSaved = Classes();
   Classes classesLoaded = Classes();
 
@@ -53,21 +53,24 @@ class TestAppState extends State<MyApp> {
   SemClassCounts semClassCountsLoad = SemClassCounts();
   SemClassCounts semClassCountsSave = SemClassCounts();
 
+  // Time calculation, and active class
+  CheckTimes checkTimes = CheckTimes();
+  var activeClass = 0;
+
   // async function to avoid returning Future<Instance>
   // IMPORTANT: without await the method will return Future<Instance>
   // TODO: Make a better solution to updating values, and loading them
+  // Function for dealing with smester and class information
   loadSharedPrefs(int semester) async {
     // Update class counts
     try {
       setState(() {
         semClassCountsLoad.sem1ClassCount = semClassCountsSave.sem1ClassCount;
         semClassCountsLoad.sem2ClassCount = semClassCountsSave.sem2ClassCount;
-        print('${semClassCountsLoad.sem1ClassCount} ' +
-            ' ${semClassCountsLoad.sem2ClassCount}');
       });
-    } catch (Exception) {
+    } catch (exception) {
       print('loadSharedPrefs() semClassCounts Failed');
-      print(Exception);
+      print(exception);
     }
 
     // Update class data for each element in each semester
@@ -80,10 +83,10 @@ class TestAppState extends State<MyApp> {
           setState(() {
             classesLoaded.sem1Classes[i] = _class;
           });
-        } catch (Exception) {
+        } catch (exception) {
           print('loadSharedPrefs() Failed');
           print(keyClasses.sem1Keys[i]);
-          print(Exception);
+          print(exception);
         }
       }
     } else if (semester == 1) {
@@ -94,21 +97,43 @@ class TestAppState extends State<MyApp> {
               Class.fromJson(await sharedPref.read(keyClasses.sem2Keys[i]));
           setState(() {
             classesLoaded.sem2Classes[i] = _class;
-            print(classesLoaded.sem2Classes[i].name);
           });
-        } catch (Exception) {
+        } catch (exception) {
           print('loadSharedPrefs() Failed');
           print(keyClasses.sem2Keys[i]);
           print(classesLoaded.sem2Classes[i].name);
-          print(Exception);
+          print(exception);
         }
       }
     }
   }
 
+  // Compare times, and update active class if needed
+  updateActiveClass() {
+    activeClass = 0;
+    int x = 1;
+    while (activeClass < x) {
+      x += 1;
+      int status = checkIfUpdateNeeded(checkTimes.checkTimes[activeClass]);
+      if (activeClass < classesLoaded.sem1Classes.length - 1) {
+        if (status == 1) {
+          activeClass += 1;
+        } else {
+          print(activeClass.toString() + ' no update needed');
+          break;
+        }
+      } else {
+        print('no more classes');
+        break;
+      }
+    }
+  }
+
+  // Initial states, and load data required for home page
   @override
   void initState() {
     loadSharedPrefs(0);
+    updateActiveClass();
     super.initState();
   }
 
@@ -176,10 +201,10 @@ class TestAppState extends State<MyApp> {
                               Container(
                                 width: 400,
                                 child: Text(
-                                  "Activity",
+                                  "Current Class",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 50,
+                                    fontSize: 45,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -187,7 +212,7 @@ class TestAppState extends State<MyApp> {
                               Container(
                                 margin: const EdgeInsets.all(10),
                                 child: Text(
-                                  "AP Biology",
+                                  '${classesLoaded.sem1Classes[activeClass].name}',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -206,17 +231,19 @@ class TestAppState extends State<MyApp> {
                                         Icons.meeting_room_outlined,
                                         color: Colors.white,
                                       ),
-                                      Text(" D201 ",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: Colors.white,
-                                          )),
+                                      Text(
+                                        ' ${classesLoaded.sem1Classes[activeClass].room} ',
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                       Icon(
                                         Icons.access_time,
                                         color: Colors.white,
                                       ),
-                                      Text(" 7:30-8:20",
+                                      Text(' ${classTimes.times[activeClass]}',
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
                                             fontSize: 20,
@@ -707,7 +734,7 @@ class TestAppState extends State<MyApp> {
                                                           scrollDirection:
                                                               Axis.vertical,
                                                           children: <Widget>[
-                                                            // Dynamically create a class card for each elemnt in the given array
+                                                            // Dynamically create a class card for each element in the given array
                                                             for (var i = 0;
                                                                 i <
                                                                     semClassCountsLoad
@@ -954,7 +981,8 @@ class TestAppState extends State<MyApp> {
     return MaterialApp(
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-          brightness: Brightness.dark,
+          // Change notification, and device info bar to white
+          systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
       ),
       home: Scaffold(
@@ -1191,6 +1219,9 @@ class TestAppState extends State<MyApp> {
       if (_selectedIndex == 2) {
         loadSharedPrefs(0);
         loadSharedPrefs(1);
+      }
+      if (_selectedIndex == 0) {
+        updateActiveClass();
       }
     });
   }
