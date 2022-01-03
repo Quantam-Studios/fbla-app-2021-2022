@@ -17,6 +17,7 @@ class _WebViewContainerState extends State<WebViewContainer> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xFF212121),
+          title: Text('CCHS Instagram'),
         ),
         body: Column(
           children: [
