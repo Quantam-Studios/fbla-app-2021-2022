@@ -71,3 +71,23 @@ class SemClassCounts {
       : sem1ClassCount = json['sem1ClassCount'],
         sem2ClassCount = json['sem2ClassCount'];
 }
+
+class ClassTimes {
+  List times = [
+    '7:30-8:20',
+    '8:30-9:25',
+    '9:30-10:25',
+    '10:30-11:25',
+    '12:05-1:00',
+    '1:05-2:00',
+    '2:05-3:00'
+  ];
+
+  ClassTimes();
+
+  Map<String, dynamic> toJson() => {
+        'times': times,
+      };
+
+  ClassTimes.fromJson(Map<String, dynamic> json) : times = json['times'];
+}

@@ -12,12 +12,16 @@ import 'socialPage.dart';
 // IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
 // Main array for class keys
 ClassKeys keyClasses = ClassKeys();
-// KEy for class counts
+// KEY for class counts
 String keyClassCount = 'classCount';
 
 // Max and min values of semesters
 const maxClasses = 7;
 const minClasses = 1;
+
+// TODO: create a system to choose lunches that has impact on which time the classes are.
+// Times of classes (Lunch A for MVP)
+ClassTimes classTimes = ClassTimes();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -495,27 +499,48 @@ class TestAppState extends State<MyApp> {
                                     child: Card(
                                       color: Color(0xff5b5b5b),
                                       child: ListTile(
-                                          title: Text.rich(TextSpan(
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                        children: [
+                                        title: Text.rich(
                                           TextSpan(
-                                            text:
-                                                '${i.toString()}.  ${classesLoaded.sem1Classes[i].name}   ',
-                                          ),
-                                          WidgetSpan(
-                                            child: Icon(
-                                              Icons.meeting_room_outlined,
+                                            style: TextStyle(
                                               color: Colors.white,
                                             ),
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    '${i.toString()}.  ${classesLoaded.sem1Classes[i].name}   ',
+                                              ),
+                                              WidgetSpan(
+                                                child: Icon(
+                                                  Icons.meeting_room_outlined,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    ' ${classesLoaded.sem1Classes[i].room}',
+                                              ),
+                                            ],
                                           ),
+                                        ),
+                                        trailing: Text.rich(
                                           TextSpan(
-                                            text:
-                                                ' ${classesLoaded.sem1Classes[i].room}',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                            children: [
+                                              WidgetSpan(
+                                                child: Icon(
+                                                  Icons.access_time,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: ' ${classTimes.times[i]}',
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ))),
+                                        ),
+                                      ),
                                     ),
                                   ),
                               ],
@@ -688,34 +713,71 @@ class TestAppState extends State<MyApp> {
                                                                         .sem1ClassCount;
                                                                 i++)
                                                               // Class card
-                                                              Card(
-                                                                color: Color(
-                                                                    0xff5b5b5b),
-                                                                child: ListTile(
-                                                                  title: Text(
-                                                                    '${classesLoaded.sem1Classes[i].name} Room: ${classesLoaded.sem1Classes[i].room}',
-                                                                    key:
-                                                                        UniqueKey(),
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white),
-                                                                  ),
-                                                                  trailing:
-                                                                      // The edit class button
-                                                                      IconButton(
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .more_vert,
+                                                              Container(
+                                                                decoration:
+                                                                    new BoxDecoration(
+                                                                  boxShadow: [
+                                                                    new BoxShadow(
                                                                       color: Colors
-                                                                          .white,
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.5),
+                                                                      blurRadius:
+                                                                          5.0,
                                                                     ),
-                                                                    onPressed:
-                                                                        () => {
-                                                                      _editClass(
-                                                                          context,
-                                                                          i,
-                                                                          0),
-                                                                    },
+                                                                  ],
+                                                                ),
+                                                                child: Card(
+                                                                  color: Color(
+                                                                      0xff5b5b5b),
+                                                                  child:
+                                                                      ListTile(
+                                                                    title: Text
+                                                                        .rich(
+                                                                      TextSpan(
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                        children: [
+                                                                          TextSpan(
+                                                                            text:
+                                                                                '${i.toString()}.  ${classesLoaded.sem1Classes[i].name}   ',
+                                                                          ),
+                                                                          WidgetSpan(
+                                                                            child:
+                                                                                Icon(
+                                                                              Icons.meeting_room_outlined,
+                                                                              color: Colors.white,
+                                                                            ),
+                                                                          ),
+                                                                          TextSpan(
+                                                                            text:
+                                                                                ' ${classesLoaded.sem1Classes[i].room}',
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    trailing:
+                                                                        // The edit class button
+                                                                        IconButton(
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .more_vert,
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                      onPressed:
+                                                                          () =>
+                                                                              {
+                                                                        _editClass(
+                                                                            context,
+                                                                            i,
+                                                                            0),
+                                                                      },
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
@@ -777,34 +839,71 @@ class TestAppState extends State<MyApp> {
                                                                         .sem2ClassCount;
                                                                 i++)
                                                               // Class card
-                                                              Card(
-                                                                color: Color(
-                                                                    0xff5b5b5b),
-                                                                child: ListTile(
-                                                                  title: Text(
-                                                                    '${classesLoaded.sem2Classes[i].name} Room: ${classesLoaded.sem2Classes[i].room}',
-                                                                    key:
-                                                                        UniqueKey(),
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white),
-                                                                  ),
-                                                                  trailing:
-                                                                      // The edit class button
-                                                                      IconButton(
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .more_vert,
+                                                              Container(
+                                                                decoration:
+                                                                    new BoxDecoration(
+                                                                  boxShadow: [
+                                                                    new BoxShadow(
                                                                       color: Colors
-                                                                          .white,
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.5),
+                                                                      blurRadius:
+                                                                          5.0,
                                                                     ),
-                                                                    onPressed:
-                                                                        () => {
-                                                                      _editClass(
-                                                                          context,
-                                                                          i,
-                                                                          1),
-                                                                    },
+                                                                  ],
+                                                                ),
+                                                                child: Card(
+                                                                  color: Color(
+                                                                      0xff5b5b5b),
+                                                                  child:
+                                                                      ListTile(
+                                                                    title: Text
+                                                                        .rich(
+                                                                      TextSpan(
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                        children: [
+                                                                          TextSpan(
+                                                                            text:
+                                                                                '${i.toString()}.  ${classesLoaded.sem2Classes[i].name}   ',
+                                                                          ),
+                                                                          WidgetSpan(
+                                                                            child:
+                                                                                Icon(
+                                                                              Icons.meeting_room_outlined,
+                                                                              color: Colors.white,
+                                                                            ),
+                                                                          ),
+                                                                          TextSpan(
+                                                                            text:
+                                                                                ' ${classesLoaded.sem2Classes[i].room}',
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    trailing:
+                                                                        // The edit class button
+                                                                        IconButton(
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .more_vert,
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                      onPressed:
+                                                                          () =>
+                                                                              {
+                                                                        _editClass(
+                                                                            context,
+                                                                            i,
+                                                                            1),
+                                                                      },
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
@@ -1003,6 +1102,7 @@ class TestAppState extends State<MyApp> {
           keyClasses.sem1Keys[index], classesSaved.sem1Classes[index]);
       loadSharedPrefs(0);
     } else if (semester == 1) {
+      print('semester 2');
       classesSaved.sem2Classes[index].name = classEditController.text;
       classesSaved.sem2Classes[index].room = classRoomEditController.text;
       sharedPref.save(
