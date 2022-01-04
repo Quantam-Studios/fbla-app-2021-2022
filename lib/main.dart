@@ -451,7 +451,7 @@ class TestAppState extends State<MyApp> {
                 ),
               ),
             ),
-            // Tasks for the day
+            // Classes for the day
             Container(
               color: Color(0xFF121212),
               width: 400,
@@ -527,6 +527,28 @@ class TestAppState extends State<MyApp> {
                                     child: Card(
                                       color: Color(0xff5b5b5b),
                                       child: ListTile(
+                                        // Room text
+                                        subtitle: Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              WidgetSpan(
+                                                child: Icon(
+                                                  Icons.meeting_room_outlined,
+                                                  color: Colors.white
+                                                      .withOpacity(0.7),
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    ' ${classesLoaded.sem1Classes[i].room}',
+                                                style: TextStyle(
+                                                    color: Colors.white
+                                                        .withOpacity(0.7)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        // Class text
                                         title: Text.rich(
                                           TextSpan(
                                             style: TextStyle(
@@ -536,16 +558,6 @@ class TestAppState extends State<MyApp> {
                                               TextSpan(
                                                 text:
                                                     '${i.toString()}.  ${classesLoaded.sem1Classes[i].name}   ',
-                                              ),
-                                              WidgetSpan(
-                                                child: Icon(
-                                                  Icons.meeting_room_outlined,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text:
-                                                    ' ${classesLoaded.sem1Classes[i].room}',
                                               ),
                                             ],
                                           ),
@@ -662,7 +674,7 @@ class TestAppState extends State<MyApp> {
         size: 150,
         color: Colors.deepPurple,
       ),
-      //CLASSES PAGE
+      //CLASSES PAGEr
       Scaffold(
         backgroundColor: Color(0xFF121212),
         body: SingleChildScrollView(
@@ -706,13 +718,13 @@ class TestAppState extends State<MyApp> {
                               children: <Widget>[
                                 // Class container
                                 Container(
-                                  child: Column(
+                                  child: ListView(
                                     children: [
                                       Center(
                                         child: Container(
                                           color: Color(0xFF121212),
                                           width: 500,
-                                          height: 520,
+                                          height: 475,
                                           child: Container(
                                             width: 500,
                                             child: Container(
@@ -752,6 +764,8 @@ class TestAppState extends State<MyApp> {
                                                                               0.5),
                                                                       blurRadius:
                                                                           5.0,
+                                                                      spreadRadius:
+                                                                          1,
                                                                     ),
                                                                   ],
                                                                 ),
@@ -760,6 +774,28 @@ class TestAppState extends State<MyApp> {
                                                                       0xff5b5b5b),
                                                                   child:
                                                                       ListTile(
+                                                                    // Room text
+                                                                    subtitle:
+                                                                        Text.rich(
+                                                                      TextSpan(
+                                                                        children: [
+                                                                          WidgetSpan(
+                                                                            child:
+                                                                                Icon(
+                                                                              Icons.meeting_room_outlined,
+                                                                              color: Colors.white.withOpacity(0.7),
+                                                                            ),
+                                                                          ),
+                                                                          TextSpan(
+                                                                            text:
+                                                                                ' ${classesLoaded.sem1Classes[i].room}',
+                                                                            style:
+                                                                                TextStyle(color: Colors.white.withOpacity(0.7)),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    // Class text
                                                                     title: Text
                                                                         .rich(
                                                                       TextSpan(
@@ -772,17 +808,6 @@ class TestAppState extends State<MyApp> {
                                                                           TextSpan(
                                                                             text:
                                                                                 '${i.toString()}.  ${classesLoaded.sem1Classes[i].name}   ',
-                                                                          ),
-                                                                          WidgetSpan(
-                                                                            child:
-                                                                                Icon(
-                                                                              Icons.meeting_room_outlined,
-                                                                              color: Colors.white,
-                                                                            ),
-                                                                          ),
-                                                                          TextSpan(
-                                                                            text:
-                                                                                ' ${classesLoaded.sem1Classes[i].room}',
                                                                           ),
                                                                         ],
                                                                       ),
@@ -832,13 +857,13 @@ class TestAppState extends State<MyApp> {
                                   ),
                                 ),
                                 Container(
-                                  child: Column(
+                                  child: ListView(
                                     children: [
                                       Center(
                                         child: Container(
                                           color: Color(0xFF121212),
                                           width: 500,
-                                          height: 520,
+                                          height: 475,
                                           child: Container(
                                             width: 500,
                                             child: Container(
@@ -886,6 +911,28 @@ class TestAppState extends State<MyApp> {
                                                                       0xff5b5b5b),
                                                                   child:
                                                                       ListTile(
+                                                                    // Room text
+                                                                    subtitle:
+                                                                        Text.rich(
+                                                                      TextSpan(
+                                                                        children: [
+                                                                          WidgetSpan(
+                                                                            child:
+                                                                                Icon(
+                                                                              Icons.meeting_room_outlined,
+                                                                              color: Colors.white.withOpacity(0.7),
+                                                                            ),
+                                                                          ),
+                                                                          TextSpan(
+                                                                            text:
+                                                                                ' ${classesLoaded.sem1Classes[i].room}',
+                                                                            style:
+                                                                                TextStyle(color: Colors.white.withOpacity(0.7)),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    // Class text
                                                                     title: Text
                                                                         .rich(
                                                                       TextSpan(
@@ -898,17 +945,6 @@ class TestAppState extends State<MyApp> {
                                                                           TextSpan(
                                                                             text:
                                                                                 '${i.toString()}.  ${classesLoaded.sem2Classes[i].name}   ',
-                                                                          ),
-                                                                          WidgetSpan(
-                                                                            child:
-                                                                                Icon(
-                                                                              Icons.meeting_room_outlined,
-                                                                              color: Colors.white,
-                                                                            ),
-                                                                          ),
-                                                                          TextSpan(
-                                                                            text:
-                                                                                ' ${classesLoaded.sem2Classes[i].room}',
                                                                           ),
                                                                         ],
                                                                       ),
