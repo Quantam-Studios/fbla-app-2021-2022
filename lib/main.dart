@@ -8,17 +8,21 @@ import 'classes.dart';
 import 'sharedRefs.dart';
 import 'classesSaveLoad.dart';
 import 'socialPage.dart';
-import 'calendar_page.dart';
+import 'timeHandling.dart';
 
 // IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
 // Main array for class keys
 ClassKeys keyClasses = ClassKeys();
-// KEy for class counts
+// KEY for class counts
 String keyClassCount = 'classCount';
 
 // Max and min values of semesters
 const maxClasses = 7;
 const minClasses = 1;
+
+// TODO: create a system to choose lunches that has impact on which time the classes are.
+// Times of classes (Lunch A for MVP)
+ClassTimes classTimes = ClassTimes();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +45,7 @@ class TestAppState extends State<MyApp> {
   Class classSave = Class();
   Class classLoad = Class();
 
-  // Arrays for saved and load lists
+  // Arrays for saved and load lists of classes
   Classes classesSaved = Classes();
   Classes classesLoaded = Classes();
 
@@ -49,21 +53,24 @@ class TestAppState extends State<MyApp> {
   SemClassCounts semClassCountsLoad = SemClassCounts();
   SemClassCounts semClassCountsSave = SemClassCounts();
 
+  // Time calculation, and active class
+  CheckTimes checkTimes = CheckTimes();
+  var activeClass = 0;
+
   // async function to avoid returning Future<Instance>
   // IMPORTANT: without await the method will return Future<Instance>
   // TODO: Make a better solution to updating values, and loading them
+  // Function for dealing with smester and class information
   loadSharedPrefs(int semester) async {
     // Update class counts
     try {
       setState(() {
         semClassCountsLoad.sem1ClassCount = semClassCountsSave.sem1ClassCount;
         semClassCountsLoad.sem2ClassCount = semClassCountsSave.sem2ClassCount;
-        print('${semClassCountsLoad.sem1ClassCount} ' +
-            ' ${semClassCountsLoad.sem2ClassCount}');
       });
-    } catch (Exception) {
+    } catch (exception) {
       print('loadSharedPrefs() semClassCounts Failed');
-      print(Exception);
+      print(exception);
     }
 
     // Update class data for each element in each semester
@@ -76,10 +83,10 @@ class TestAppState extends State<MyApp> {
           setState(() {
             classesLoaded.sem1Classes[i] = _class;
           });
-        } catch (Exception) {
+        } catch (exception) {
           print('loadSharedPrefs() Failed');
           print(keyClasses.sem1Keys[i]);
-          print(Exception);
+          print(exception);
         }
       }
     } else if (semester == 1) {
@@ -90,16 +97,44 @@ class TestAppState extends State<MyApp> {
               Class.fromJson(await sharedPref.read(keyClasses.sem2Keys[i]));
           setState(() {
             classesLoaded.sem2Classes[i] = _class;
-            print(classesLoaded.sem2Classes[i].name);
           });
-        } catch (Exception) {
+        } catch (exception) {
           print('loadSharedPrefs() Failed');
           print(keyClasses.sem2Keys[i]);
           print(classesLoaded.sem2Classes[i].name);
-          print(Exception);
+          print(exception);
         }
       }
     }
+  }
+
+  // Compare times, and update active class if needed
+  updateActiveClass() {
+    activeClass = 0;
+    int x = 1;
+    while (activeClass < x) {
+      x += 1;
+      int status = checkIfUpdateNeeded(checkTimes.checkTimes[activeClass]);
+      if (activeClass < classesLoaded.sem1Classes.length - 1) {
+        if (status == 1) {
+          activeClass += 1;
+        } else {
+          print(activeClass.toString() + ' no update needed');
+          break;
+        }
+      } else {
+        print('no more classes');
+        break;
+      }
+    }
+  }
+
+  // Initial states, and load data required for home page
+  @override
+  void initState() {
+    loadSharedPrefs(0);
+    updateActiveClass();
+    super.initState();
   }
 
   // Bottom Navigation
@@ -166,10 +201,10 @@ class TestAppState extends State<MyApp> {
                               Container(
                                 width: 400,
                                 child: Text(
-                                  "Activity",
+                                  "Current Class",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 50,
+                                    fontSize: 45,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -177,7 +212,7 @@ class TestAppState extends State<MyApp> {
                               Container(
                                 margin: const EdgeInsets.all(10),
                                 child: Text(
-                                  "AP Biology",
+                                  '${classesLoaded.sem1Classes[activeClass].name}',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -196,17 +231,19 @@ class TestAppState extends State<MyApp> {
                                         Icons.meeting_room_outlined,
                                         color: Colors.white,
                                       ),
-                                      Text(" D201 ",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: Colors.white,
-                                          )),
+                                      Text(
+                                        ' ${classesLoaded.sem1Classes[activeClass].room} ',
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                       Icon(
                                         Icons.access_time,
                                         color: Colors.white,
                                       ),
-                                      Text(" 7:30-8:20",
+                                      Text(' ${classTimes.times[activeClass]}',
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
                                             fontSize: 20,
@@ -414,7 +451,7 @@ class TestAppState extends State<MyApp> {
                 ),
               ),
             ),
-            // classes for the day
+            // Classes for the day
             Container(
               color: Color(0xFF121212),
               width: 400,
@@ -449,15 +486,20 @@ class TestAppState extends State<MyApp> {
                           title: Center(
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.format_list_bulleted_rounded,
-                                  color: Colors.white,
-                                ),
-                                Text(
-                                  ' Your classes for the day.',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
+                                Center(
+                                    child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.format_list_bulleted_rounded,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      ' Your classes for the day.',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    ),
+                                  ],
+                                )),
                               ],
                             ),
                           ),
@@ -468,105 +510,122 @@ class TestAppState extends State<MyApp> {
                             child: ListView(
                               scrollDirection: Axis.vertical,
                               children: <Widget>[
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
+                                for (var i = 0;
+                                    i < semClassCountsLoad.sem1ClassCount;
+                                    i++)
+                                  // Class card
+                                  Container(
+                                    decoration: new BoxDecoration(
+                                      boxShadow: [
+                                        new BoxShadow(
+                                          color: Colors.black.withOpacity(0.5),
+                                          blurRadius: 5.0,
+                                        ),
+                                      ],
+                                    ),
+                                    // content of container
+                                    child: Card(
+                                      color: Color(0xff5b5b5b),
+                                      child: ListTile(
+                                        // Room text
+                                        subtitle: Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              WidgetSpan(
+                                                child: Icon(
+                                                  Icons.meeting_room_outlined,
+                                                  color: Colors.white
+                                                      .withOpacity(0.7),
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    ' ${classesLoaded.sem1Classes[i].room}',
+                                                style: TextStyle(
+                                                    color: Colors.white
+                                                        .withOpacity(0.7)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        // Class text
+                                        title: Text.rich(
+                                          TextSpan(
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    '${i.toString()}.  ${classesLoaded.sem1Classes[i].name}   ',
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        trailing: Text.rich(
+                                          TextSpan(
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                            children: [
+                                              WidgetSpan(
+                                                child: Icon(
+                                                  Icons.access_time,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: ' ${classTimes.times[i]}',
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                                Card(
-                                  color: Color(0xff5b5b5b),
-                                  child: ListTile(
-                                    title: Text(
-                                      'US History',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
                               ],
                             ),
                           ),
                         ),
-                        ButtonBar(
-                          alignment: MainAxisAlignment.start,
-                          children: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                primary: Colors.black.withOpacity(0.8),
-                                shape: const BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(5),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                // go to the classes page
-                                _onItemTapped(2);
-                              },
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    'View All Classes',
-                                    style: TextStyle(
-                                      color: Colors.white,
+                        Container(
+                          child: ButtonBar(
+                              alignment: MainAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        primary: Colors.black.withOpacity(0.5),
+                                        backgroundColor:
+                                            Colors.black.withOpacity(0.5),
+                                        shape: const BeveledRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(5),
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        // go to the classes page
+                                        _onItemTapped(2);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Text(
+                                            'View All Classes',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.arrow_forward_rounded,
+                                            color: Colors.white,
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward_rounded,
-                                    color: Colors.white,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
+                                  ],
+                                )
+                              ]),
                         ),
                       ],
                     ),
@@ -609,8 +668,13 @@ class TestAppState extends State<MyApp> {
         ),
       ),
       //PLANNER PAGE
-      TableEventsExample(),
-      //CLASSES PAGE
+      //TODO: (Create page)
+      Icon(
+        Icons.calendar_today_rounded,
+        size: 150,
+        color: Colors.deepPurple,
+      ),
+      //CLASSES PAGEr
       Scaffold(
         backgroundColor: Color(0xFF121212),
         body: SingleChildScrollView(
@@ -654,13 +718,13 @@ class TestAppState extends State<MyApp> {
                               children: <Widget>[
                                 // Class container
                                 Container(
-                                  child: Column(
+                                  child: ListView(
                                     children: [
                                       Center(
                                         child: Container(
                                           color: Color(0xFF121212),
                                           width: 500,
-                                          height: 520,
+                                          height: 475,
                                           child: Container(
                                             width: 500,
                                             child: Container(
@@ -682,41 +746,91 @@ class TestAppState extends State<MyApp> {
                                                           scrollDirection:
                                                               Axis.vertical,
                                                           children: <Widget>[
-                                                            // Dynamically create a class card for each elemnt in the given array
+                                                            // Dynamically create a class card for each element in the given array
                                                             for (var i = 0;
                                                                 i <
                                                                     semClassCountsLoad
                                                                         .sem1ClassCount;
                                                                 i++)
                                                               // Class card
-                                                              Card(
-                                                                color: Color(
-                                                                    0xff5b5b5b),
-                                                                child: ListTile(
-                                                                  title: Text(
-                                                                    '${classesLoaded.sem1Classes[i].name} Room: ${classesLoaded.sem1Classes[i].room}',
-                                                                    key:
-                                                                        UniqueKey(),
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white),
-                                                                  ),
-                                                                  trailing:
-                                                                      // The edit class button
-                                                                      IconButton(
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .more_vert,
+                                                              Container(
+                                                                decoration:
+                                                                    new BoxDecoration(
+                                                                  boxShadow: [
+                                                                    new BoxShadow(
                                                                       color: Colors
-                                                                          .white,
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.5),
+                                                                      blurRadius:
+                                                                          5.0,
+                                                                      spreadRadius:
+                                                                          1,
                                                                     ),
-                                                                    onPressed:
-                                                                        () => {
-                                                                      _editClass(
-                                                                          context,
-                                                                          i,
-                                                                          0),
-                                                                    },
+                                                                  ],
+                                                                ),
+                                                                child: Card(
+                                                                  color: Color(
+                                                                      0xff5b5b5b),
+                                                                  child:
+                                                                      ListTile(
+                                                                    // Room text
+                                                                    subtitle:
+                                                                        Text.rich(
+                                                                      TextSpan(
+                                                                        children: [
+                                                                          WidgetSpan(
+                                                                            child:
+                                                                                Icon(
+                                                                              Icons.meeting_room_outlined,
+                                                                              color: Colors.white.withOpacity(0.7),
+                                                                            ),
+                                                                          ),
+                                                                          TextSpan(
+                                                                            text:
+                                                                                ' ${classesLoaded.sem1Classes[i].room}',
+                                                                            style:
+                                                                                TextStyle(color: Colors.white.withOpacity(0.7)),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    // Class text
+                                                                    title: Text
+                                                                        .rich(
+                                                                      TextSpan(
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                        children: [
+                                                                          TextSpan(
+                                                                            text:
+                                                                                '${i.toString()}.  ${classesLoaded.sem1Classes[i].name}   ',
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    trailing:
+                                                                        // The edit class button
+                                                                        IconButton(
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .more_vert,
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                      onPressed:
+                                                                          () =>
+                                                                              {
+                                                                        _editClass(
+                                                                            context,
+                                                                            i,
+                                                                            0),
+                                                                      },
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
@@ -743,13 +857,13 @@ class TestAppState extends State<MyApp> {
                                   ),
                                 ),
                                 Container(
-                                  child: Column(
+                                  child: ListView(
                                     children: [
                                       Center(
                                         child: Container(
                                           color: Color(0xFF121212),
                                           width: 500,
-                                          height: 520,
+                                          height: 475,
                                           child: Container(
                                             width: 500,
                                             child: Container(
@@ -778,34 +892,82 @@ class TestAppState extends State<MyApp> {
                                                                         .sem2ClassCount;
                                                                 i++)
                                                               // Class card
-                                                              Card(
-                                                                color: Color(
-                                                                    0xff5b5b5b),
-                                                                child: ListTile(
-                                                                  title: Text(
-                                                                    '${classesLoaded.sem2Classes[i].name} Room: ${classesLoaded.sem2Classes[i].room}',
-                                                                    key:
-                                                                        UniqueKey(),
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white),
-                                                                  ),
-                                                                  trailing:
-                                                                      // The edit class button
-                                                                      IconButton(
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .more_vert,
+                                                              Container(
+                                                                decoration:
+                                                                    new BoxDecoration(
+                                                                  boxShadow: [
+                                                                    new BoxShadow(
                                                                       color: Colors
-                                                                          .white,
+                                                                          .black
+                                                                          .withOpacity(
+                                                                              0.5),
+                                                                      blurRadius:
+                                                                          5.0,
                                                                     ),
-                                                                    onPressed:
-                                                                        () => {
-                                                                      _editClass(
-                                                                          context,
-                                                                          i,
-                                                                          1),
-                                                                    },
+                                                                  ],
+                                                                ),
+                                                                child: Card(
+                                                                  color: Color(
+                                                                      0xff5b5b5b),
+                                                                  child:
+                                                                      ListTile(
+                                                                    // Room text
+                                                                    subtitle:
+                                                                        Text.rich(
+                                                                      TextSpan(
+                                                                        children: [
+                                                                          WidgetSpan(
+                                                                            child:
+                                                                                Icon(
+                                                                              Icons.meeting_room_outlined,
+                                                                              color: Colors.white.withOpacity(0.7),
+                                                                            ),
+                                                                          ),
+                                                                          TextSpan(
+                                                                            text:
+                                                                                ' ${classesLoaded.sem1Classes[i].room}',
+                                                                            style:
+                                                                                TextStyle(color: Colors.white.withOpacity(0.7)),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    // Class text
+                                                                    title: Text
+                                                                        .rich(
+                                                                      TextSpan(
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                        children: [
+                                                                          TextSpan(
+                                                                            text:
+                                                                                '${i.toString()}.  ${classesLoaded.sem2Classes[i].name}   ',
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    trailing:
+                                                                        // The edit class button
+                                                                        IconButton(
+                                                                      icon:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .more_vert,
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                      onPressed:
+                                                                          () =>
+                                                                              {
+                                                                        _editClass(
+                                                                            context,
+                                                                            i,
+                                                                            1),
+                                                                      },
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
@@ -849,13 +1011,14 @@ class TestAppState extends State<MyApp> {
         size: 150,
         color: Colors.deepPurple,
       ),
-    //Socials PAGE
-      socialPage(),
+      //Socials PAGE
+      SocialPage(),
     ];
     return MaterialApp(
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-          brightness: Brightness.dark,
+          // Change notification, and device info bar to white
+          systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
       ),
       home: Scaffold(
@@ -901,6 +1064,7 @@ class TestAppState extends State<MyApp> {
             child: BottomNavigationBar(
               backgroundColor: Color(0xFF212121),
               currentIndex: _selectedIndex,
+              showSelectedLabels: true,
               onTap: _onItemTapped,
               selectedItemColor: Colors.blue,
               unselectedItemColor: Colors.white,
@@ -1003,6 +1167,7 @@ class TestAppState extends State<MyApp> {
           keyClasses.sem1Keys[index], classesSaved.sem1Classes[index]);
       loadSharedPrefs(0);
     } else if (semester == 1) {
+      print('semester 2');
       classesSaved.sem2Classes[index].name = classEditController.text;
       classesSaved.sem2Classes[index].room = classRoomEditController.text;
       sharedPref.save(
@@ -1071,7 +1236,8 @@ class TestAppState extends State<MyApp> {
               // get rid of pop up
               Navigator.pop(context),
               // save the data
-              _classEdit(index, semester)
+              _classEdit(index, semester),
+              getCurrentTime()
             },
             child: Text(
               "Confirm",
@@ -1089,6 +1255,9 @@ class TestAppState extends State<MyApp> {
       if (_selectedIndex == 2) {
         loadSharedPrefs(0);
         loadSharedPrefs(1);
+      }
+      if (_selectedIndex == 0) {
+        updateActiveClass();
       }
     });
   }

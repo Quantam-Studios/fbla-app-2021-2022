@@ -13,7 +13,10 @@ class _WebViewContainerState extends State<WebViewContainer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          backgroundColor: Color(0xFF212121),
+          title: Text('CCHS Instagram'),
+        ),
         body: Column(
           children: [
             Expanded(
