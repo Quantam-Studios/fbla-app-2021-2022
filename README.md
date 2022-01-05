@@ -47,21 +47,20 @@ samples, guidance on mobile development, and a full API reference.
 ## Packages (frameworks, as called by Flutter)
 
 ___dependencies:___
-  rflutter_alert: ^2.0.4
-  shared_preferences:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.2
-  carousel_slider: ^4.0.0
-  webview_flutter:
-  font_awesome_flutter:
-  sizer: ^2.0.15
+- rflutter_alert: ^2.0.4
+- shared_preferences:
+- flutter:
+    - sdk: flutter
+- cupertino_icons: ^1.0.2
+- carousel_slider: ^4.0.0
+- webview_flutter:
+- font_awesome_flutter:
+- sizer: ^2.0.15
 
 ___dev_dependencies:___
-  flutter_test:
-    sdk: flutter
-  flutter_launcher_icons: "^0.9.2"
-
+- flutter_test:
+    - sdk: flutter
+- flutter_launcher_icons: "^0.9.2"
 
 
 ## App Project Description
