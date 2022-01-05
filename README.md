@@ -1,6 +1,7 @@
 # C Hub Introduction
 
 A companion app for students (mainly high school ones) to help them throughout the day. Below are the ways to make your way through our app!
+
 **Carousel:**
   - located at the top of the home page, 
   - rotates between the following: current class, after school activity, lunch menu
