@@ -174,13 +174,88 @@ import 'package:table_calendar/table_calendar.dart';
 
 @override
 class TableEventsExample extends StatelessWidget {
+  CalendarFormat format = CalendarFormat.month;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: TableCalendar(
-        focusedDay: DateTime.now(),
-        firstDay: DateTime(2021),
-        lastDay: DateTime(2023),
+      backgroundColor: Color(0xff121212),
+      body: SingleChildScrollView(
+        child: Container(
+          child: Card(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+              side: BorderSide(color: Colors.white, width: 2.0),
+            ),
+            color: Color(0xff121212),
+            margin: const EdgeInsets.all(8.0),
+            child: TableCalendar(
+              focusedDay: DateTime.now(),
+              firstDay: DateTime(2021),
+              lastDay: DateTime(2023),
+              calendarFormat: format,
+
+              // Calendar Header Styling
+              headerStyle: const HeaderStyle(
+                titleTextStyle: TextStyle(color: Colors.white, fontSize: 20.0),
+                decoration: BoxDecoration(
+                    color: Color(0xff3b3b3b),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10))),
+                formatButtonTextStyle:
+                    TextStyle(color: Colors.white, fontSize: 16.0),
+                formatButtonDecoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(15.0),
+                  ),
+                ),
+                leftChevronIcon: Icon(
+                  Icons.chevron_left,
+                  color: Colors.blue,
+                  size: 28,
+                ),
+                rightChevronIcon: Icon(
+                  Icons.chevron_right,
+                  color: Colors.blue,
+                  size: 28,
+                ),
+              ),
+              // Calendar Days Styling
+              daysOfWeekStyle: const DaysOfWeekStyle(
+                // Weekend days color (Sat,Sun)
+                weekendStyle: TextStyle(color: Color(0xff82B7FF)),
+              ),
+              // Calendar Dates styling
+              calendarStyle: CalendarStyle(
+                // Weekend dates color (Sat & Sun Column)
+                weekendTextStyle: TextStyle(color: Color(0xff82B7FF)),
+                // highlighted color for today
+                todayDecoration: BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                ),
+                // highlighted color for selected day
+                selectedDecoration: BoxDecoration(
+                  color: Colors.amber,
+                  shape: BoxShape.circle,
+                ),
+                withinRangeTextStyle: TextStyle(
+                  color: Colors.white,
+                ),
+                selectedTextStyle: TextStyle(color: Colors.white),
+                defaultTextStyle: TextStyle(color: Colors.white),
+              ),
+              onFormatChanged: (CalendarFormat _format) {
+                setState() {
+                  format = _format;
+                }
+              },
+            ),
+          ),
+        ),
       ),
     );
   }

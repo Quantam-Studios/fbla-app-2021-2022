@@ -2,14 +2,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import 'package:flutter_application_1/calendar_page.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:intl/date_symbol_data_local.dart';
 // Custom made dependencies
 import 'classes.dart';
 import 'sharedRefs.dart';
 import 'classesSaveLoad.dart';
 import 'socialPage.dart';
 import 'timeHandling.dart';
+import 'package:flutter_application_1/calendar_page.dart';
 
 // IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
 // Main array for class keys
@@ -26,6 +27,7 @@ const minClasses = 1;
 ClassTimes classTimes = ClassTimes();
 
 void main() async {
+  initializeDateFormatting();
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MaterialApp(home: MyApp()));
 }
@@ -670,7 +672,7 @@ class TestAppState extends State<MyApp> {
       ),
       //PLANNER PAGE
       TableEventsExample(),
-    
+
       //CLASSES PAGEr
       Scaffold(
         backgroundColor: Color(0xFF121212),
