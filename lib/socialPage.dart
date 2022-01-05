@@ -3,7 +3,8 @@ import 'web_view_container.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SocialPage extends StatelessWidget {
-  final _links = ['https://www.instagram.com/cchs165/?hl=en'];
+  final _instagram = ['https://www.instagram.com/cchs165/?hl=en'];
+  final _twitter = ['https://twitter.com/cchs165'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,16 +12,31 @@ class SocialPage extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: _links.map((link) => _urlButton(context, link)).toList(),
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: _instagram
+                    .map((link) => _instagramButton(context, link))
+                    .toList(),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: _twitter
+                    .map((link) => _twitterButton(context, link))
+                    .toList(),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _urlButton(BuildContext context, String url) {
+// widget for the instagram button
+  Widget _instagramButton(BuildContext context, String url) {
+    int index = 0;
     return Center(
       heightFactor: 2,
       child: Card(
@@ -52,16 +68,46 @@ class SocialPage extends StatelessWidget {
               ],
             ),
           ),
-          onTap: () => _handleURLButtonPress(context, url),
+          onTap: () => _handleURLButtonPress(context, url, index),
+        ),
+      ),
+    );
+  }
+
+// widget for the twitter button
+  Widget _twitterButton(BuildContext context, String url) {
+    int index = 1;
+    return Center(
+      heightFactor: 2,
+      child: Card(
+        color: Color(0xff5b5b5b),
+        child: ListTile(
+          leading: FaIcon(
+            FontAwesomeIcons.twitter,
+            color: Colors.blue,
+          ),
+          title: Text.rich(
+            TextSpan(
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              children: [
+                TextSpan(
+                  text: 'View the CCHS Twitter',
+                ),
+              ],
+            ),
+          ),
+          onTap: () => _handleURLButtonPress(context, url, index),
         ),
       ),
     );
   }
 
   //onPressed: () => _handleURLButtonPress(context, url),
-  void _handleURLButtonPress(BuildContext context, String url) {
+  void _handleURLButtonPress(BuildContext context, String url, int index) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => WebViewContainer(url)));
+        MaterialPageRoute(builder: (context) => WebViewContainer(url, index)));
   }
 }
 

@@ -3,12 +3,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:sizer/sizer.dart';
 // Custom made dependencies
 import 'classes.dart';
 import 'sharedRefs.dart';
 import 'classesSaveLoad.dart';
 import 'socialPage.dart';
 import 'timeHandling.dart';
+import 'lunch.dart';
 
 // IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
 // Main array for class keys
@@ -24,9 +26,21 @@ const minClasses = 1;
 // Times of classes (Lunch A for MVP)
 ClassTimes classTimes = ClassTimes();
 
+// Lunches for the week (MVP)
+LunchesOfWeek lunchesOfWeek = LunchesOfWeek();
+
+// Days of the week
+DaysOfWeek daysOfWeek = DaysOfWeek();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MaterialApp(home: MyApp()));
+  runApp(
+    Sizer(
+      builder: (context, orientation, deviceType) {
+        return MaterialApp(debugShowCheckedModeBanner: false, home: MyApp());
+      },
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -175,7 +189,7 @@ class TestAppState extends State<MyApp> {
                   bottomRight: Radius.circular(30.0),
                 ),
                 child: Container(
-                  height: 400,
+                  height: 50.h,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
@@ -195,7 +209,7 @@ class TestAppState extends State<MyApp> {
                         ),
                         child: Container(
                           width: 400,
-                          height: 600,
+                          height: 45.h,
                           child: Column(
                             children: [
                               Container(
@@ -204,7 +218,7 @@ class TestAppState extends State<MyApp> {
                                   "Current Class",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 45,
+                                    fontSize: 34.sp,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -215,7 +229,7 @@ class TestAppState extends State<MyApp> {
                                   '${classesLoaded.sem1Classes[activeClass].name}',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 30,
+                                    fontSize: 24.sp,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -235,7 +249,7 @@ class TestAppState extends State<MyApp> {
                                         ' ${classesLoaded.sem1Classes[activeClass].room} ',
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
-                                          fontSize: 20,
+                                          fontSize: 15.sp,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -246,7 +260,7 @@ class TestAppState extends State<MyApp> {
                                       Text(' ${classTimes.times[activeClass]}',
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: 15.sp,
                                             color: Colors.white,
                                           ))
                                     ],
@@ -258,7 +272,7 @@ class TestAppState extends State<MyApp> {
                                 child: OutlinedButton.icon(
                                   label: Text(
                                     'Classes',
-                                    style: TextStyle(fontSize: 20),
+                                    style: TextStyle(fontSize: 15.sp),
                                   ),
                                   icon:
                                       Icon(Icons.format_list_bulleted_rounded),
@@ -302,7 +316,7 @@ class TestAppState extends State<MyApp> {
                                   "Lunch",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 50,
+                                    fontSize: 34.sp,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -310,10 +324,10 @@ class TestAppState extends State<MyApp> {
                               Container(
                                 margin: const EdgeInsets.all(10),
                                 child: Text(
-                                  "Pizza, and other things...",
+                                  "${lunchesOfWeek.lunches[3]}",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 30,
+                                    fontSize: 15.sp,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -332,7 +346,7 @@ class TestAppState extends State<MyApp> {
                                       Text(" 11:30-12:00",
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: 15.sp,
                                             color: Colors.white,
                                           ))
                                     ],
@@ -344,7 +358,7 @@ class TestAppState extends State<MyApp> {
                                 child: OutlinedButton.icon(
                                   label: Text(
                                     'Next Lunch',
-                                    style: TextStyle(fontSize: 20),
+                                    style: TextStyle(fontSize: 15.sp),
                                   ),
                                   icon: Icon(Icons.fastfood_rounded),
                                   style: ButtonStyle(
@@ -387,7 +401,7 @@ class TestAppState extends State<MyApp> {
                                   "After School",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 48,
+                                    fontSize: 34.sp,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -398,7 +412,7 @@ class TestAppState extends State<MyApp> {
                                   "Makers Club",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 30,
+                                    fontSize: 24.sp,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -410,7 +424,7 @@ class TestAppState extends State<MyApp> {
                                 child: OutlinedButton.icon(
                                   label: Text(
                                     'Details',
-                                    style: TextStyle(fontSize: 20),
+                                    style: TextStyle(fontSize: 15.sp),
                                   ),
                                   icon: Icon(Icons.assignment_rounded),
                                   style: ButtonStyle(
@@ -438,7 +452,7 @@ class TestAppState extends State<MyApp> {
 
                     //Slider Container properties
                     options: CarouselOptions(
-                      height: 300.0,
+                      height: 45.h,
                       enlargeCenterPage: true,
                       autoPlay: true,
                       aspectRatio: 16 / 9,
@@ -635,32 +649,117 @@ class TestAppState extends State<MyApp> {
                 ),
               ),
             ),
+            // Lunches for the day
             Container(
               color: Color(0xFF121212),
               width: 400,
-              height: 600,
+              height: 470,
               child: Container(
-                width: 500,
+                width: 600,
                 child: Container(
-                  width: 100,
-                  margin: EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Color(0xFF3b3b3b),
                     borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(30.0),
-                      bottomLeft: Radius.circular(30.0),
-                      topLeft: Radius.circular(30.0),
-                      bottomRight: Radius.circular(30.0),
-                    ),
+                        topLeft: Radius.circular(25),
+                        topRight: Radius.circular(25),
+                        bottomLeft: Radius.circular(25),
+                        bottomRight: Radius.circular(25)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 8,
-                        blurRadius: 10,
-                        offset: Offset(0, 0),
-                      )
+                        color: Colors.black.withOpacity(0.5),
+                        spreadRadius: 3,
+                        blurRadius: 7,
+                        offset: Offset(0, 0), // changes position of shadow
+                      ),
                     ],
                   ),
+                  child: Card(
+                    clipBehavior: Clip.antiAlias,
+                    color: Color(0xFF3b3b3b),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          title: Center(
+                            child: Row(
+                              children: [
+                                Center(
+                                    child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.format_list_bulleted_rounded,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      ' Schhol lunches for the week.',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    ),
+                                  ],
+                                )),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: ListView(
+                              scrollDirection: Axis.vertical,
+                              children: <Widget>[
+                                for (var i = 0; i < 5; i++)
+                                  // lunch card
+                                  Container(
+                                    decoration: new BoxDecoration(
+                                      boxShadow: [
+                                        new BoxShadow(
+                                          color: Colors.black.withOpacity(0.5),
+                                          blurRadius: 5.0,
+                                        ),
+                                      ],
+                                    ),
+                                    // content of container
+                                    child: Card(
+                                      color: Color(0xff5b5b5b),
+                                      child: ListTile(
+                                        // Lunch text
+                                        title: Text.rich(
+                                          TextSpan(
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    '${lunchesOfWeek.lunches[i]}',
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        trailing: Text.rich(
+                                          TextSpan(
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                  text: '${daysOfWeek.days[i]}')
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  width: 100,
+                  margin: EdgeInsets.all(20),
                 ),
               ),
             ),
@@ -674,7 +773,7 @@ class TestAppState extends State<MyApp> {
         size: 150,
         color: Colors.deepPurple,
       ),
-      //CLASSES PAGEr
+      //CLASSES PAGE
       Scaffold(
         backgroundColor: Color(0xFF121212),
         body: SingleChildScrollView(
@@ -691,7 +790,7 @@ class TestAppState extends State<MyApp> {
                     SizedBox(height: 20.0),
                     Text('Classes',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 22, color: Colors.white)),
+                        style: TextStyle(fontSize: 20.sp, color: Colors.white)),
                     DefaultTabController(
                       length: 2, // length of tabs
                       initialIndex: 0,
@@ -709,7 +808,7 @@ class TestAppState extends State<MyApp> {
                             ),
                           ),
                           Container(
-                            height: 620, //height of TabBarView
+                            height: 70.h, //height of TabBarView
                             decoration: BoxDecoration(
                                 border: Border(
                                     top: BorderSide(
@@ -724,7 +823,7 @@ class TestAppState extends State<MyApp> {
                                         child: Container(
                                           color: Color(0xFF121212),
                                           width: 500,
-                                          height: 475,
+                                          height: 60.h,
                                           child: Container(
                                             width: 500,
                                             child: Container(
@@ -863,7 +962,7 @@ class TestAppState extends State<MyApp> {
                                         child: Container(
                                           color: Color(0xFF121212),
                                           width: 500,
-                                          height: 475,
+                                          height: 60.h,
                                           child: Container(
                                             width: 500,
                                             child: Container(
@@ -925,7 +1024,7 @@ class TestAppState extends State<MyApp> {
                                                                           ),
                                                                           TextSpan(
                                                                             text:
-                                                                                ' ${classesLoaded.sem1Classes[i].room}',
+                                                                                ' ${classesLoaded.sem2Classes[i].room}',
                                                                             style:
                                                                                 TextStyle(color: Colors.white.withOpacity(0.7)),
                                                                           ),

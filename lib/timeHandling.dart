@@ -10,8 +10,6 @@ class CheckTimes {
     TimeOfDay(hour: 9, minute: 30),
     // 3rd Period
     TimeOfDay(hour: 10, minute: 30),
-    // Lunch
-    TimeOfDay(hour: 11, minute: 30),
     // 4th Period
     TimeOfDay(hour: 12, minute: 5),
     // 5th Period
