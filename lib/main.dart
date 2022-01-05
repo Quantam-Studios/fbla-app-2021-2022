@@ -2,6 +2,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import 'package:flutter_application_1/calendar_page.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 // Custom made dependencies
 import 'classes.dart';
@@ -668,12 +669,8 @@ class TestAppState extends State<MyApp> {
         ),
       ),
       //PLANNER PAGE
-      //TODO: (Create page)
-      Icon(
-        Icons.calendar_today_rounded,
-        size: 150,
-        color: Colors.deepPurple,
-      ),
+      TableEventsExample(),
+    
       //CLASSES PAGEr
       Scaffold(
         backgroundColor: Color(0xFF121212),
