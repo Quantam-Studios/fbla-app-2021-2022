@@ -8,6 +8,7 @@ import 'classes.dart';
 import 'sharedRefs.dart';
 import 'classesSaveLoad.dart';
 import 'socialPage.dart';
+import 'calendar_page.dart';
 
 // IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
 // Main array for class keys
@@ -608,12 +609,7 @@ class TestAppState extends State<MyApp> {
         ),
       ),
       //PLANNER PAGE
-      //TODO: (Create page)
-      Icon(
-        Icons.calendar_today_rounded,
-        size: 150,
-        color: Colors.deepPurple,
-      ),
+      TableEventsExample(),
       //CLASSES PAGE
       Scaffold(
         backgroundColor: Color(0xFF121212),
