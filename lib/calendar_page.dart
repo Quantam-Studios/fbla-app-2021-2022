@@ -172,6 +172,17 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+class MyEvents {
+  final String eventTitle;
+  final String eventDescp;
+
+  MyEvents({required this.eventTitle, required this.eventDescp});
+
+  @override
+  String toString() => eventTitle;
+}
+
+// The planner page code
 @override
 class TableEventsExample extends StatelessWidget {
   CalendarFormat format = CalendarFormat.month;
@@ -181,82 +192,210 @@ class TableEventsExample extends StatelessWidget {
       backgroundColor: Color(0xff121212),
       body: SingleChildScrollView(
         child: Container(
-          child: Card(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-              side: BorderSide(color: Colors.white, width: 2.0),
-            ),
-            color: Color(0xff121212),
-            margin: const EdgeInsets.all(8.0),
-            child: TableCalendar(
-              focusedDay: DateTime.now(),
-              firstDay: DateTime(2021),
-              lastDay: DateTime(2023),
-              calendarFormat: format,
-
-              // Calendar Header Styling
-              headerStyle: const HeaderStyle(
-                titleTextStyle: TextStyle(color: Colors.white, fontSize: 20.0),
-                decoration: BoxDecoration(
-                    color: Color(0xff3b3b3b),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10))),
-                formatButtonTextStyle:
-                    TextStyle(color: Colors.white, fontSize: 16.0),
-                formatButtonDecoration: BoxDecoration(
-                  color: Colors.blue,
+          child: Column(
+            children: [
+              // Calendar container
+              Card(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
-                    Radius.circular(15.0),
+                    Radius.circular(10),
+                  ),
+                  side: BorderSide(color: Colors.white, width: 2.0),
+                ),
+                color: Color(0xff121212),
+                margin: const EdgeInsets.all(8.0),
+                // Calendar widget
+                child: TableCalendar(
+                  focusedDay: DateTime.now(),
+                  firstDay: DateTime(2021),
+                  lastDay: DateTime(2023),
+                  calendarFormat: format,
+
+                  // Calendar Header Styling
+                  headerStyle: const HeaderStyle(
+                    titleTextStyle:
+                        TextStyle(color: Colors.white, fontSize: 20.0),
+                    decoration: BoxDecoration(
+                        color: Color(0xff3b3b3b),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10))),
+                    formatButtonTextStyle:
+                        TextStyle(color: Colors.white, fontSize: 16.0),
+                    formatButtonDecoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(15.0),
+                      ),
+                    ),
+                    leftChevronIcon: Icon(
+                      Icons.chevron_left,
+                      color: Colors.blue,
+                      size: 28,
+                    ),
+                    rightChevronIcon: Icon(
+                      Icons.chevron_right,
+                      color: Colors.blue,
+                      size: 28,
+                    ),
+                  ),
+                  // Calendar Days Styling
+                  daysOfWeekStyle: const DaysOfWeekStyle(
+                    // Weekend days color (Sat,Sun)
+                    weekendStyle: TextStyle(color: Color(0xff82B7FF)),
+                  ),
+                  // Calendar Dates styling
+                  calendarStyle: CalendarStyle(
+                    // Weekend dates color (Sat & Sun Column)
+                    weekendTextStyle: TextStyle(color: Color(0xff82B7FF)),
+                    // highlighted color for today
+                    todayDecoration: BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
+                    // highlighted color for selected day
+                    selectedDecoration: BoxDecoration(
+                      color: Colors.amber,
+                      shape: BoxShape.circle,
+                    ),
+                    withinRangeTextStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                    selectedTextStyle: TextStyle(color: Colors.white),
+                    defaultTextStyle: TextStyle(color: Colors.white),
+                  ),
+                  onFormatChanged: (CalendarFormat _format) {
+                    setState() {
+                      format = _format;
+                    }
+                  },
+                ),
+              ),
+              // Below the calendar
+              // Add Events
+              Container(
+                alignment: Alignment.center,
+                margin: EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(15),
+                  ),
+                  color: Color(0xff3b3b3b),
+                ),
+                child: DefaultTabController(
+                  length: 2, // length of tabs
+                  initialIndex: 0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Container(
+                        child: TabBar(
+                          labelColor: Colors.blue,
+                          unselectedLabelColor: Colors.white,
+                          tabs: [
+                            Tab(text: 'Add Events'),
+                            Tab(text: 'View Events'),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: 620, //height of TabBarView
+                        decoration: BoxDecoration(
+                            border: Border(
+                                top: BorderSide(
+                                    color: Colors.grey, width: 0.5))),
+                        child: TabBarView(
+                          children: <Widget>[
+                            // Class container
+                            Container(
+                              child: ListView(
+                                children: [
+                                  Center(
+                                    child: Container(
+                                      color: Color(0xFF121212),
+                                      width: 500,
+                                      height: 475,
+                                      child: Container(
+                                        width: 500,
+                                        child: Container(
+                                            child: Card(
+                                          clipBehavior: Clip.antiAlias,
+                                          color: Color(0xFF121212),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              // content of page
+                                              Expanded(
+                                                child: Container(
+                                                  padding: EdgeInsets.all(10),
+                                                  child: ListView(),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: ListView(
+                                children: [
+                                  Center(
+                                    child: Container(
+                                      color: Color(0xFF121212),
+                                      width: 500,
+                                      height: 475,
+                                      child: Container(
+                                        width: 500,
+                                        child: Container(
+                                            child: Card(
+                                          clipBehavior: Clip.antiAlias,
+                                          color: Color(0xFF121212),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              // content of page
+                                              Expanded(
+                                                child: Container(
+                                                  padding: EdgeInsets.all(10),
+                                                  child: ListView(),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                leftChevronIcon: Icon(
-                  Icons.chevron_left,
-                  color: Colors.blue,
-                  size: 28,
-                ),
-                rightChevronIcon: Icon(
-                  Icons.chevron_right,
-                  color: Colors.blue,
-                  size: 28,
-                ),
               ),
-              // Calendar Days Styling
-              daysOfWeekStyle: const DaysOfWeekStyle(
-                // Weekend days color (Sat,Sun)
-                weekendStyle: TextStyle(color: Color(0xff82B7FF)),
-              ),
-              // Calendar Dates styling
-              calendarStyle: CalendarStyle(
-                // Weekend dates color (Sat & Sun Column)
-                weekendTextStyle: TextStyle(color: Color(0xff82B7FF)),
-                // highlighted color for today
-                todayDecoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
-                ),
-                // highlighted color for selected day
-                selectedDecoration: BoxDecoration(
-                  color: Colors.amber,
-                  shape: BoxShape.circle,
-                ),
-                withinRangeTextStyle: TextStyle(
-                  color: Colors.white,
-                ),
-                selectedTextStyle: TextStyle(color: Colors.white),
-                defaultTextStyle: TextStyle(color: Colors.white),
-              ),
-              onFormatChanged: (CalendarFormat _format) {
-                setState() {
-                  format = _format;
-                }
-              },
-            ),
+            ],
           ),
         ),
       ),
     );
   }
 } //TableEventsExample build(BuildContext context){}
+
+// newEvent() function creates a new event on the calendar
+// Called when the add event button is pressed
+void newEvent(DateTime _selectedDate) {
+  print('$_selectedDate');
+}

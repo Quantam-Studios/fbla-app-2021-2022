@@ -673,7 +673,7 @@ class TestAppState extends State<MyApp> {
       //PLANNER PAGE
       TableEventsExample(),
 
-      //CLASSES PAGEr
+      //CLASSES PAGE
       Scaffold(
         backgroundColor: Color(0xFF121212),
         body: SingleChildScrollView(
@@ -688,9 +688,11 @@ class TestAppState extends State<MyApp> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     SizedBox(height: 20.0),
-                    Text('Classes',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 22, color: Colors.white)),
+                    Text(
+                      'Classes',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 22, color: Colors.white),
+                    ),
                     DefaultTabController(
                       length: 2, // length of tabs
                       initialIndex: 0,
