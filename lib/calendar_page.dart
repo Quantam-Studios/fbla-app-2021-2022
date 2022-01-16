@@ -183,9 +183,17 @@ class MyEvents {
 }
 
 // The planner page code
+
+class PlannerPage extends StatefulWidget {
+  PlannerPageContent createState() => PlannerPageContent();
+}
+
 @override
-class TableEventsExample extends StatelessWidget {
-  CalendarFormat format = CalendarFormat.month;
+class PlannerPageContent extends State {
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime? _selectedDay;
+  DateTime _focusedDay = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -195,194 +203,258 @@ class TableEventsExample extends StatelessWidget {
           child: Column(
             children: [
               // Calendar container
-              Card(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
+              Container(
+                child: Card(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    side: BorderSide(color: Color(0xff3b3b3b), width: 2.0),
                   ),
-                  side: BorderSide(color: Colors.white, width: 2.0),
-                ),
-                color: Color(0xff121212),
-                margin: const EdgeInsets.all(8.0),
-                // Calendar widget
-                child: TableCalendar(
-                  focusedDay: DateTime.now(),
-                  firstDay: DateTime(2021),
-                  lastDay: DateTime(2023),
-                  calendarFormat: format,
+                  color: Color(0xff121212),
+                  margin: const EdgeInsets.all(8.0),
+                  // Calendar widget
+                  child: TableCalendar(
+                    focusedDay: _focusedDay,
+                    firstDay: DateTime(2021),
+                    lastDay: DateTime(2023),
+                    calendarFormat: _calendarFormat,
+                    selectedDayPredicate: (day) {
+                      // Use `selectedDayPredicate` to determine which day is currently selected.
+                      // If this returns true, then `day` will be marked as selected.
 
-                  // Calendar Header Styling
-                  headerStyle: const HeaderStyle(
-                    titleTextStyle:
-                        TextStyle(color: Colors.white, fontSize: 20.0),
-                    decoration: BoxDecoration(
-                        color: Color(0xff3b3b3b),
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10))),
-                    formatButtonTextStyle:
-                        TextStyle(color: Colors.white, fontSize: 16.0),
-                    formatButtonDecoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15.0),
+                      // Using `isSameDay` is recommended to disregard
+                      // the time-part of compared DateTime objects.
+                      return isSameDay(_selectedDay, day);
+                    },
+                    onDaySelected: (selectedDay, focusedDay) {
+                      if (!isSameDay(_selectedDay, selectedDay)) {
+                        // Call `setState()` when updating the selected day
+                        setState(() {
+                          _selectedDay = selectedDay;
+                          _focusedDay = focusedDay;
+                        });
+                      }
+                    },
+                    onFormatChanged: (format) {
+                      if (_calendarFormat != format) {
+                        // Call `setState()` when updating calendar format
+                        setState(() {
+                          _calendarFormat = format;
+                        });
+                      }
+                    },
+                    onPageChanged: (focusedDay) {
+                      // No need to call `setState()` here
+                      _focusedDay = focusedDay;
+                    },
+
+                    // Calendar Header Styling
+                    headerStyle: HeaderStyle(
+                      titleTextStyle:
+                          TextStyle(color: Colors.white, fontSize: 20.0),
+                      decoration: BoxDecoration(
+                          color: Color(0xff3b3b3b),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10))),
+                      formatButtonTextStyle:
+                          TextStyle(color: Colors.white, fontSize: 16.0),
+                      formatButtonDecoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15.0),
+                        ),
+                      ),
+                      leftChevronIcon: Icon(
+                        Icons.chevron_left,
+                        color: Colors.blue,
+                        size: 28,
+                      ),
+                      rightChevronIcon: Icon(
+                        Icons.chevron_right,
+                        color: Colors.blue,
+                        size: 28,
                       ),
                     ),
-                    leftChevronIcon: Icon(
-                      Icons.chevron_left,
-                      color: Colors.blue,
-                      size: 28,
+                    // Calendar Days Styling
+                    daysOfWeekStyle: DaysOfWeekStyle(
+                      // Weekend days color (Sat,Sun)
+                      weekendStyle: TextStyle(color: Color(0xff82B7FF)),
                     ),
-                    rightChevronIcon: Icon(
-                      Icons.chevron_right,
-                      color: Colors.blue,
-                      size: 28,
+                    // Calendar Dates styling
+                    calendarStyle: CalendarStyle(
+                      // Weekend dates color (Sat & Sun Column)
+                      weekendTextStyle: TextStyle(color: Color(0xff82B7FF)),
+                      // highlighted color for today
+                      // get rid of all decoration for the current day
+                      todayDecoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.0),
+                      ),
+                      // highlighted color for selected day
+                      selectedDecoration: BoxDecoration(
+                        color: Colors.blue,
+                        shape: BoxShape.circle,
+                      ),
+                      withinRangeTextStyle: TextStyle(
+                        color: Colors.white,
+                      ),
+                      selectedTextStyle: TextStyle(color: Colors.white),
+                      defaultTextStyle: TextStyle(color: Colors.white),
                     ),
                   ),
-                  // Calendar Days Styling
-                  daysOfWeekStyle: const DaysOfWeekStyle(
-                    // Weekend days color (Sat,Sun)
-                    weekendStyle: TextStyle(color: Color(0xff82B7FF)),
-                  ),
-                  // Calendar Dates styling
-                  calendarStyle: CalendarStyle(
-                    // Weekend dates color (Sat & Sun Column)
-                    weekendTextStyle: TextStyle(color: Color(0xff82B7FF)),
-                    // highlighted color for today
-                    todayDecoration: BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
-                    // highlighted color for selected day
-                    selectedDecoration: BoxDecoration(
-                      color: Colors.amber,
-                      shape: BoxShape.circle,
-                    ),
-                    withinRangeTextStyle: TextStyle(
-                      color: Colors.white,
-                    ),
-                    selectedTextStyle: TextStyle(color: Colors.white),
-                    defaultTextStyle: TextStyle(color: Colors.white),
-                  ),
-                  onFormatChanged: (CalendarFormat _format) {
-                    setState() {
-                      format = _format;
-                    }
-                  },
                 ),
               ),
               // Below the calendar
-              // Add Events
+              // View events
               Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(15),
-                  ),
-                  color: Color(0xff3b3b3b),
-                ),
-                child: DefaultTabController(
-                  length: 2, // length of tabs
-                  initialIndex: 0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Container(
-                        child: TabBar(
-                          labelColor: Colors.blue,
-                          unselectedLabelColor: Colors.white,
-                          tabs: [
-                            Tab(text: 'Add Events'),
-                            Tab(text: 'View Events'),
-                          ],
+                color: Color(0xFF121212),
+                height: 600,
+                child: Container(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25),
+                          topRight: Radius.circular(25),
+                          bottomLeft: Radius.circular(25),
+                          bottomRight: Radius.circular(25)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5),
+                          spreadRadius: 3,
+                          blurRadius: 7,
+                          offset: Offset(0, 0), // changes position of shadow
                         ),
+                      ],
+                    ),
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      color: Color(0xFF3b3b3b),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
-                      Container(
-                        height: 620, //height of TabBarView
-                        decoration: BoxDecoration(
-                            border: Border(
-                                top: BorderSide(
-                                    color: Colors.grey, width: 0.5))),
-                        child: TabBarView(
-                          children: <Widget>[
-                            // Class container
-                            Container(
-                              child: ListView(
+                      child: Column(
+                        children: [
+                          ListTile(
+                            // Title (top bar of events container)
+                            title: Center(
+                              child: Row(
                                 children: [
                                   Center(
-                                    child: Container(
-                                      color: Color(0xFF121212),
-                                      width: 500,
-                                      height: 475,
-                                      child: Container(
-                                        width: 500,
-                                        child: Container(
-                                            child: Card(
-                                          clipBehavior: Clip.antiAlias,
-                                          color: Color(0xFF121212),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              // content of page
-                                              Expanded(
-                                                child: Container(
-                                                  padding: EdgeInsets.all(10),
-                                                  child: ListView(),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )),
-                                      ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.format_list_bulleted_rounded,
+                                          color: Colors.white,
+                                        ),
+                                        Text(
+                                          ' Events.',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            Container(
+                            trailing: ElevatedButton(
+                              onPressed: () => {},
+                              child: Icon(Icons.add, color: Colors.white),
+                              style: ElevatedButton.styleFrom(
+                                shape: CircleBorder(),
+                                padding: EdgeInsets.all(10),
+                                primary: Colors.blue, // <-- Button color
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(10),
                               child: ListView(
-                                children: [
-                                  Center(
-                                    child: Container(
-                                      color: Color(0xFF121212),
-                                      width: 500,
-                                      height: 475,
-                                      child: Container(
-                                        width: 500,
-                                        child: Container(
-                                            child: Card(
-                                          clipBehavior: Clip.antiAlias,
-                                          color: Color(0xFF121212),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0),
+                                scrollDirection: Axis.vertical,
+                                children: <Widget>[
+                                  for (var i = 0; i < 7; i++)
+                                    // Class card
+                                    Container(
+                                      decoration: new BoxDecoration(
+                                        boxShadow: [
+                                          new BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                            blurRadius: 5.0,
                                           ),
-                                          child: Column(
-                                            children: [
-                                              // content of page
-                                              Expanded(
-                                                child: Container(
-                                                  padding: EdgeInsets.all(10),
-                                                  child: ListView(),
+                                        ],
+                                      ),
+                                      // content of container
+                                      child: Card(
+                                        color: Color(0xff5b5b5b),
+                                        child: ListTile(
+                                          // Room text
+                                          subtitle: Text.rich(
+                                            TextSpan(
+                                              children: [
+                                                WidgetSpan(
+                                                  child: Icon(
+                                                    Icons.meeting_room_outlined,
+                                                    color: Colors.white
+                                                        .withOpacity(0.7),
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                                TextSpan(
+                                                  text: ' test',
+                                                  style: TextStyle(
+                                                      color: Colors.white
+                                                          .withOpacity(0.7)),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        )),
+                                          // Class text
+                                          title: Text.rich(
+                                            TextSpan(
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text:
+                                                      '${i.toString()}. test  ',
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          trailing: Text.rich(
+                                            TextSpan(
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                              children: [
+                                                WidgetSpan(
+                                                  child: Icon(
+                                                    Icons.access_time,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: ' test',
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),

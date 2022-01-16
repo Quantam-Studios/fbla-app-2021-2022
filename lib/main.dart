@@ -671,7 +671,7 @@ class TestAppState extends State<MyApp> {
         ),
       ),
       //PLANNER PAGE
-      TableEventsExample(),
+      PlannerPage(),
 
       //CLASSES PAGE
       Scaffold(
