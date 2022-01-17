@@ -32,12 +32,13 @@ dependencies:
   webview_flutter:
   font_awesome_flutter:
   sizer: ^2.0.15
+  table_calendar: ^3.0.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: "^0.9.2"
 
-# App icon stuff
+# App icon stuff  
 flutter_icons:
   image_path: "assets/chubicon.png"
   android: true

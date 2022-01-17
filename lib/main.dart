@@ -11,6 +11,7 @@ import 'classesSaveLoad.dart';
 import 'socialPage.dart';
 import 'timeHandling.dart';
 import 'lunch.dart';
+import 'calendar_page.dart';
 
 // IMPORTANT: CONSTANT KEYS FOR SAVE DATA IN SHARED PREFERENCES
 // Main array for class keys
@@ -767,7 +768,7 @@ class TestAppState extends State<MyApp> {
         ),
       ),
       //PLANNER PAGE
-      //TODO: (Create page)
+      PlannerPage(),
       Icon(
         Icons.calendar_today_rounded,
         size: 150,
