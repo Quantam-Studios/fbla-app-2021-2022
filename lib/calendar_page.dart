@@ -60,7 +60,6 @@ class PlannerPageContent extends State {
   // Initial states, and load data required for planner page
   @override
   void initState() {
-    eventCount = 0;
     loadSharedPrefs();
     super.initState();
   }
@@ -70,7 +69,6 @@ class PlannerPageContent extends State {
   void dispose() {
     // Clean up the controller when the widget is disposed.
     titleEditController.dispose();
-    //loadSharedPrefs();
     super.dispose();
   }
 

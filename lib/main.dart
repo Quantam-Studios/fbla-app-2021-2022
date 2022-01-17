@@ -769,11 +769,6 @@ class TestAppState extends State<MyApp> {
       ),
       //PLANNER PAGE
       PlannerPage(),
-      Icon(
-        Icons.calendar_today_rounded,
-        size: 150,
-        color: Colors.deepPurple,
-      ),
       //CLASSES PAGE
       Scaffold(
         backgroundColor: Color(0xFF121212),
@@ -1104,13 +1099,6 @@ class TestAppState extends State<MyApp> {
               ),
             )),
       ),
-      //CLUBS PAGE
-      //TODO: (Create page)
-      Icon(
-        Icons.local_activity_rounded,
-        size: 150,
-        color: Colors.deepPurple,
-      ),
       //Socials PAGE
       SocialPage(),
     ];
@@ -1129,20 +1117,21 @@ class TestAppState extends State<MyApp> {
           backgroundColor: Color(0xFF212121),
           title: Text('CCHS Hub'),
           shadowColor: Colors.black.withOpacity(0.5),
-          actions: <Widget>[
-            // Settings
-            Builder(
-              builder: (context) => IconButton(
-                icon: Icon(
-                  Icons.settings,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-              ),
-            ),
-          ],
+          //TODO: Add the settings menu back whebn it is needed by uncommenting the below code:
+          // actions: <Widget>[
+          //   // Settings
+          //   Builder(
+          //     builder: (context) => IconButton(
+          //       icon: Icon(
+          //         Icons.settings,
+          //         color: Colors.white,
+          //       ),
+          //       onPressed: () {
+          //         Scaffold.of(context).openDrawer();
+          //       },
+          //     ),
+          //   ),
+          // ],
         ),
         // Bottom Bar
         bottomNavigationBar: Container(
@@ -1190,13 +1179,6 @@ class TestAppState extends State<MyApp> {
                     Icons.format_list_bulleted_rounded,
                   ),
                   label: 'Classes',
-                ),
-                BottomNavigationBarItem(
-                  backgroundColor: Color(0xFF212121),
-                  icon: Icon(
-                    Icons.local_activity_rounded,
-                  ),
-                  label: 'Clubs',
                 ),
                 BottomNavigationBarItem(
                   backgroundColor: Color(0xFF212121),
