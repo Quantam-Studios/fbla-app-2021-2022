@@ -169,30 +169,81 @@
 // }
 
 // Zach Code
+// Packages and Dependencies
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-class MyEvents {
-  final String eventTitle;
-  final String eventDescp;
-
-  MyEvents({required this.eventTitle, required this.eventDescp});
-
-  @override
-  String toString() => eventTitle;
-}
+import 'package:rflutter_alert/rflutter_alert.dart';
+// Custom made dependencies
+import 'sharedRefs.dart';
 
 // The planner page code
-
 class PlannerPage extends StatefulWidget {
   PlannerPageContent createState() => PlannerPageContent();
 }
 
+int eventCount = 0;
+
+// Keys for mapping events
+EventKeys eventKeys = EventKeys();
+
 @override
 class PlannerPageContent extends State {
+  // Shared Preferences Configuration
+  SharedPref sharedPref = SharedPref();
+
+  // Functions for loading event info
+  BetaEvent eventSave = BetaEvent();
+  BetaEvent eventLoad = BetaEvent();
+
+  // Functions for loading events
+  BetaEvents eventsSave = BetaEvents();
+  BetaEvents eventsLoad = BetaEvents();
+
+  loadSharedPrefs() async {
+    //TODO: make this scalable. (There needs to be a way for an infinite amount of keys.)
+    // Runs for the amount events
+    for (int i = 0; i < eventCount; i++) {
+      try {
+        BetaEvent _event =
+            BetaEvent.fromJson(await sharedPref.read(eventKeys.keys[i]));
+        setState(() {
+          eventsLoad.events[i] = _event;
+        });
+      } catch (exception) {
+        print('loadSharedPrefs() Failed');
+        print(eventKeys.keys[i].toString());
+        print(exception);
+      }
+    }
+  }
+
+  // calendar initialization
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime? _selectedDay;
   DateTime _focusedDay = DateTime.now();
+
+  // add event pop up initialization
+  // Title controller
+  TextEditingController titleEditController = TextEditingController(text: '');
+
+  // Initial states, and load data required for planner page
+  @override
+  void initState() {
+    eventCount = 0;
+    loadSharedPrefs();
+    super.initState();
+  }
+
+  // clean up closed pop up widget controllers.
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    titleEditController.dispose();
+    //loadSharedPrefs();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -361,8 +412,13 @@ class PlannerPageContent extends State {
                                 ],
                               ),
                             ),
+                            // Add event button
                             trailing: ElevatedButton(
-                              onPressed: () => {},
+                              onPressed: () => {
+                                setState(() {
+                                  _addEvent();
+                                })
+                              },
                               child: Icon(Icons.add, color: Colors.white),
                               style: ElevatedButton.styleFrom(
                                 shape: CircleBorder(),
@@ -377,7 +433,7 @@ class PlannerPageContent extends State {
                               child: ListView(
                                 scrollDirection: Axis.vertical,
                                 children: <Widget>[
-                                  for (var i = 0; i < 7; i++)
+                                  for (var i = 0; i < eventCount; i++)
                                     // Class card
                                     Container(
                                       decoration: new BoxDecoration(
@@ -393,19 +449,22 @@ class PlannerPageContent extends State {
                                       child: Card(
                                         color: Color(0xff5b5b5b),
                                         child: ListTile(
-                                          // Room text
+                                          // Date subtitle text
                                           subtitle: Text.rich(
                                             TextSpan(
                                               children: [
                                                 WidgetSpan(
                                                   child: Icon(
-                                                    Icons.meeting_room_outlined,
+                                                    Icons.event,
                                                     color: Colors.white
                                                         .withOpacity(0.7),
                                                   ),
                                                 ),
                                                 TextSpan(
-                                                  text: ' test',
+                                                  text:
+                                                      // Formats the string which was converted from DateTime and looks something like: "2020-04-17 11:59:46.405"
+                                                      // to only show this: 2020-04-17
+                                                      '${eventsLoad.events[i].date.substring(0, 10)}',
                                                   style: TextStyle(
                                                       color: Colors.white
                                                           .withOpacity(0.7)),
@@ -413,7 +472,7 @@ class PlannerPageContent extends State {
                                               ],
                                             ),
                                           ),
-                                          // Class text
+                                          // Event title text
                                           title: Text.rich(
                                             TextSpan(
                                               style: TextStyle(
@@ -422,28 +481,23 @@ class PlannerPageContent extends State {
                                               children: [
                                                 TextSpan(
                                                   text:
-                                                      '${i.toString()}. test  ',
+                                                      '${(i + 1).toString()}.  ${eventsLoad.events[i].title}',
                                                 ),
                                               ],
                                             ),
                                           ),
-                                          trailing: Text.rich(
-                                            TextSpan(
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                              children: [
-                                                WidgetSpan(
-                                                  child: Icon(
-                                                    Icons.access_time,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                TextSpan(
-                                                  text: ' test',
-                                                ),
-                                              ],
+                                          trailing:
+                                              // The edit class button
+                                              IconButton(
+                                            icon: Icon(
+                                              Icons.more_vert,
+                                              color: Colors.white,
                                             ),
+                                            onPressed: () => setState(() {
+                                              {
+                                                _editEvent(context, i);
+                                              }
+                                            }),
                                           ),
                                         ),
                                       ),
@@ -464,10 +518,119 @@ class PlannerPageContent extends State {
       ),
     );
   }
+
+  // TODO: prevent updating all event cards for performance
+  // TODO: make the save sytem scalable
+  // Save events when edited
+  _eventEditSave(int index) {
+    print('current dateTime: ' + _selectedDay.toString());
+    eventsSave.events[index].title = titleEditController.text;
+    eventsSave.events[index].date = _focusedDay.toString();
+    sharedPref.save(eventKeys.keys[index], eventsSave.events[index]);
+    loadSharedPrefs();
+  }
+
+// This is the pop up for adding events.
+// function called draws a pop up
+  _editEvent(context, int index) {
+    // Actual pop up object
+    Alert(
+        style: AlertStyle(
+          backgroundColor: Color(0xff3b3b3b),
+          titleStyle: TextStyle(color: Colors.white),
+        ),
+        context: context,
+        title: "Edit Event",
+        content: Column(
+          children: <Widget>[
+            // Title input feild
+            TextField(
+              controller: titleEditController,
+              // limit the string size to a maximum of 20
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(20),
+              ],
+              style: TextStyle(
+                color: Colors.white,
+              ),
+              decoration: InputDecoration(
+                icon: Icon(
+                  Icons.event,
+                  color: Colors.white,
+                ),
+                labelText: 'Event',
+                labelStyle: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+        // Confirm button
+        buttons: [
+          DialogButton(
+            onPressed: () => {
+              // get rid of pop up
+              print('closed'),
+              Navigator.of(context, rootNavigator: true).pop(),
+              // save the data
+              _eventEditSave(index),
+            },
+            child: Text(
+              "Confirm",
+              style: TextStyle(color: Colors.white, fontSize: 15),
+            ),
+          )
+        ]).show();
+  }
+
+  // Add Event functionailty
+  void _addEvent() {
+    // make sure there are no more than 20 events (this is only for the test build for the sake of performance)
+    if (eventCount < 5) {
+      eventCount += 1;
+      print(eventCount.toString());
+    } else {
+      print('5 events already added (5 is the maximum value of events)');
+    }
+  }
 } //TableEventsExample build(BuildContext context){}
 
-// newEvent() function creates a new event on the calendar
-// Called when the add event button is pressed
-void newEvent(DateTime _selectedDate) {
-  print('$_selectedDate');
+//TODO: EXTREMELY IMPORTANT: this event system has a limit of 5 events, because the key system isnt infinite.
+// we need to consider using firebase or some database system for saving all data in order to make the entire app cleaner, faster, and easier to work with when it comes to coding new features.
+class BetaEvent {
+  String title = '';
+  String date = DateTime.now().toString();
+  //DateTime datetime = DateTime.now();
+
+  BetaEvent({String title = '', String date = '2022-01-17 11:59:46.405'});
+
+  BetaEvent.fromJson(Map<String, dynamic> json)
+      : title = json['title'],
+        date = json['date'];
+  // datetime = json['dateTime'];
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'date': date,
+        //'dateTime': datetime,
+      };
+}
+
+class BetaEvents {
+  List events = List.filled(5, BetaEvent());
+  BetaEvents();
+
+  Map<String, dynamic> toJson() => {
+        'events': events,
+      };
+
+  BetaEvents.fromJson(Map<String, dynamic> json) : events = json['events'];
+}
+
+class EventKeys {
+  List keys = ['0', '1', '2', '3', '4'];
+  EventKeys();
+
+  Map<String, dynamic> toJson() => {'keys': keys};
+
+  EventKeys.fromJson(Map<String, dynamic> json) : keys = json['keys'];
 }

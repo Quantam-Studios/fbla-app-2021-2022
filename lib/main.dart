@@ -886,7 +886,7 @@ class TestAppState extends State<MyApp> {
                                                           scrollDirection:
                                                               Axis.vertical,
                                                           children: <Widget>[
-                                                            // Dynamically create a class card for each elemnt in the given array
+                                                            // Dynamically create a class card for each element in the given array
                                                             for (var i = 0;
                                                                 i <
                                                                     semClassCountsLoad
