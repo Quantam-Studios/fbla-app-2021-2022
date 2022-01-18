@@ -1,7 +1,7 @@
 // The Class() class is defined here.
 
 class Class {
-  String name = 'Tap the three dots to edit...';
+  String name = 'No current class';
   String room = '';
   // TEST parameters
   // {String room = '', String name = ''}}
