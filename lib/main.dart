@@ -301,6 +301,7 @@ class TestAppState extends State<MyApp> {
 
                       //2nd container of Slider
                       //Lunch of the day
+                      //TODO: make it dynamically change with the week
                       Container(
                         margin: EdgeInsets.all(6.0),
                         decoration: BoxDecoration(
@@ -325,7 +326,7 @@ class TestAppState extends State<MyApp> {
                               Container(
                                 margin: const EdgeInsets.all(10),
                                 child: Text(
-                                  "${lunchesOfWeek.lunches[3]}",
+                                  "${lunchesOfWeek.lunches[0]}",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15.sp,
@@ -383,72 +384,72 @@ class TestAppState extends State<MyApp> {
                           ),
                         ),
                       ),
-
-                      //3rd container of Slider
-                      // Clubs after school
-                      Container(
-                        margin: EdgeInsets.all(6.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Container(
-                          width: 400,
-                          height: 600,
-                          child: Column(
-                            children: [
-                              Container(
-                                width: 400,
-                                child: Text(
-                                  "After School",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 34.sp,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.all(10),
-                                child: Text(
-                                  "Makers Club",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24.sp,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              // More Details Button
-                              Container(
-                                height: 60,
-                                alignment: Alignment.bottomCenter,
-                                child: OutlinedButton.icon(
-                                  label: Text(
-                                    'Details',
-                                    style: TextStyle(fontSize: 15.sp),
-                                  ),
-                                  icon: Icon(Icons.assignment_rounded),
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Color(0xFF303030)),
-                                      overlayColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Color(0xFF000000)),
-                                      foregroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Color(0xFFffffff))),
-                                  onPressed: () {
-                                    setState(() {
-                                      print("scroll to details");
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // //TODO: TEMPORARILY TAKEN OUT FOR THE MVP.
+                      // //3rd container of Slider
+                      // // Clubs after school
+                      // Container(
+                      //   margin: EdgeInsets.all(6.0),
+                      //   decoration: BoxDecoration(
+                      //     borderRadius: BorderRadius.circular(8.0),
+                      //   ),
+                      //   child: Container(
+                      //     width: 400,
+                      //     height: 600,
+                      //     child: Column(
+                      //       children: [
+                      //         Container(
+                      //           width: 400,
+                      //           child: Text(
+                      //             "After School",
+                      //             style: TextStyle(
+                      //               color: Colors.white,
+                      //               fontSize: 34.sp,
+                      //             ),
+                      //             textAlign: TextAlign.center,
+                      //           ),
+                      //         ),
+                      //         Container(
+                      //           margin: const EdgeInsets.all(10),
+                      //           child: Text(
+                      //             "Makers Club",
+                      //             style: TextStyle(
+                      //               color: Colors.white,
+                      //               fontSize: 24.sp,
+                      //             ),
+                      //             textAlign: TextAlign.center,
+                      //           ),
+                      //         ),
+                      //         // More Details Button
+                      //         Container(
+                      //           height: 60,
+                      //           alignment: Alignment.bottomCenter,
+                      //           child: OutlinedButton.icon(
+                      //             label: Text(
+                      //               'Details',
+                      //               style: TextStyle(fontSize: 15.sp),
+                      //             ),
+                      //             icon: Icon(Icons.assignment_rounded),
+                      //             style: ButtonStyle(
+                      //                 backgroundColor:
+                      //                     MaterialStateProperty.all<Color>(
+                      //                         Color(0xFF303030)),
+                      //                 overlayColor:
+                      //                     MaterialStateProperty.all<Color>(
+                      //                         Color(0xFF000000)),
+                      //                 foregroundColor:
+                      //                     MaterialStateProperty.all<Color>(
+                      //                         Color(0xFFffffff))),
+                      //             onPressed: () {
+                      //               setState(() {
+                      //                 print("scroll to details");
+                      //               });
+                      //             },
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                     ],
 
                     //Slider Container properties
@@ -689,11 +690,11 @@ class TestAppState extends State<MyApp> {
                                     child: Row(
                                   children: [
                                     Icon(
-                                      Icons.format_list_bulleted_rounded,
+                                      Icons.fastfood_rounded,
                                       color: Colors.white,
                                     ),
                                     Text(
-                                      ' Schhol lunches for the week.',
+                                      ' School lunches for the week.',
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 20),
                                     ),

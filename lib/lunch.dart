@@ -1,8 +1,8 @@
 class LunchesOfWeek {
   List lunches = [
-    'Half Day',
-    'Chicken Fajita, Refried Beans, Fruit, Milk',
-    'Bosco Sticks, Corn, Cucumber, Tomatoes, Fruit, Milk',
+    'No School',
+    'Chicken Fajita, Baked Beans, Chips, Fruit, Milk',
+    'Pizza, Fruit, Chips, milk',
     'Country Fried Chicken, Mashed potatoes, Green Beans, Roll, Fruit, Milk',
     'BBQ Chicken, Baked Beans, Carrots, Chips, Fruit, Milk',
   ];
